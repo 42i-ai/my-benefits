@@ -1,8 +1,12 @@
 # NLP and Data Extraction Challenge
 
+> [!TIP]
+> If you have Markdown Preview Enhanced on Vs code you can preview by (shift + command + v)
+
 The idea of this test is to understand your way of thinking, coding, and problem-solving skills. There is no right answer, just follow your instincts and share with us the solutions of the challenges below:
 
-**IMPORTANT**: DO NOT FEED ANY OF THESE FILES INTO GENERATIVE AI PROVIDERS (ChatGPT, Bard, etc) OR USE ANY OUTPUT FROM THESE MODELS TO SOLVE THIS CHALLENGE
+> [!CAUTION]
+> Do not feed any of these files into generative AI providers (ChatGPT, Bard, etc) or use any output from these models to solve this challenge
 
 1. Data Extraction
 
@@ -10,3 +14,46 @@ Automated fundamental data extraction is very useful for large organizations who
 
 The first challenge is: extract information from all the PDF files found at /data/1
 You can choose your preferred techniques or tools, but be aware that the data you'd extracted may be necessary for the next challenge!
+
+# Solution for extract:
+
+For the extraction solution the pipeline will create a raw area where it will save the raw text extract from the file. This approch is usefull if we need to reprocess the data without reprocess the pdf files again. In a solution the pdf files can be storage on a landing area. On the second step of the pipeline will transform the data on tables pre-processing the data. On the last step we will have the analitycs table can be used for datascience purpose.
+
+# Enviroment:
+
+For the enviroment solution we use Poetry[^2] for manage python depencencies. The solution will be packet on a docker compose file whish can be used for deploy on production and execute test on CD/CI process.
+
+- [x] docker with streamlit
+- [x] generate raw data
+- [ ] create silver layer with transformed data and duckdb
+- [ ] create jupyter notebook to analyze and create the gold layer
+- [ ] create a dashboard connecting streamlit and duckdb
+- [ ] create a pipeline using airflow to automatize the process
+- [ ] add to the pipeline functionality for read ocr pdf
+- [ ] create a mlflow for all the process
+
+Libraires used:
+
+- Mypds
+- streamlit[^1]
+
+For extract text from PDF I will use pypdf2 and write the data as json.
+
+```bash
+docker build -t nlp-challenge -f my_benefits/extract/Dockerfile --no-cache --progress=plain . 2>&1 | tee build.log
+```
+
+The following command runs the container
+
+```bash
+docker run -p 8501:8501 nlp-challenge
+```
+
+### References
+
+[^1]: [Build a stremlit image](https://docs.streamlit.io/knowledge-base/tutorials/deploy/docker)
+[^2]: [Poetry site](https://python-poetry.org/)
+[^3]: [Build a pipeline using duckdb](https://www.youtube.com/watch?v=eXXImkz-vMs)
+[^4]: [Extract text from pdf tutorial](https://www.youtube.com/watch?v=RULkvM7AdzY)
+[^5]: [Natural Language Processing with Python](https://www.udemy.com/course/nlp-natural-language-processing-with-python/learn/lecture/12744493#overview)5
+[^6]: [Thoughtful Machine Learning](https://www.amazon.com/Thoughtful-Machine-Learning-Test-Driven-Approach/dp/1449374069)
