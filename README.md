@@ -19,6 +19,10 @@ You can choose your preferred techniques or tools, but be aware that the data yo
 
 For the extraction solution the pipeline will create a raw area where it will save the raw text extract from the file. This approch is usefull if we need to reprocess the data without reprocess the pdf files again. In a solution the pdf files can be storage on a landing area. On the second step of the pipeline will transform the data on tables pre-processing the data. On the last step we will have the analitycs table can be used for datascience purpose.
 
+1 - Read the pdf data and write the extracted data on raw directory in txt format with the same name of the pdf file.
+2 - Clean the data removing spaces, text breaking and lower case the text[^8].
+3 - Write cleaned data on duckdb table[^7].
+
 # Enviroment:
 
 For the enviroment solution we use Poetry[^2] for manage python depencencies. The solution will be packet on a docker compose file whish can be used for deploy on production and execute test on CD/CI process.
@@ -32,7 +36,15 @@ For the enviroment solution we use Poetry[^2] for manage python depencencies. Th
 - [ ] add to the pipeline functionality for read ocr pdf
 - [ ] create a mlflow for all the process
 
-Libraires used:
+## Libraires used on this project:
+
+### PDFtoText
+
+For to extract information from PDF for further analysis we will to use PDFtoText. According with the article on Medium [^9] the python package PyMuPDF[^10] is a good choice because it preserves tables and original pdf structure.
+
+### Duckdb
+
+DuckDB aims to bring together fast & efficient SQL query execution engine that can run complex queries on large sets of data. It integrates tightly with Pandas DataFrames and allows us to run these queries directly on top of them without needing to take data in and out of the dataframe[^7].
 
 - Mypds
 - streamlit[^1]
@@ -57,3 +69,7 @@ docker run -p 8501:8501 nlp-challenge
 [^4]: [Extract text from pdf tutorial](https://www.youtube.com/watch?v=RULkvM7AdzY)
 [^5]: [Natural Language Processing with Python](https://www.udemy.com/course/nlp-natural-language-processing-with-python/learn/lecture/12744493#overview)5
 [^6]: [Thoughtful Machine Learning](https://www.amazon.com/Thoughtful-Machine-Learning-Test-Driven-Approach/dp/1449374069)
+[^7]: [Supercharge your data processing with DuckDB](https://medium.com/learning-sql/supercharge-your-data-processing-with-duckdb-cea907196704)
+[^8]: [Extracting-information-from-pdf-file-using-OCR-and-NLP](https://github.com/archowdhury/Extracting-information-from-PDF-files-using-OCR-and-NLP/blob/master/PDF%20Extractor.ipynb)
+[^9]: [Python Packages for PDF Data Extraction](https://medium.com/analytics-vidhya/python-packages-for-pdf-data-extraction-d14ec30f0ad0)
+[^10]: [https://pymupdf.readthedocs.io/en/latest/](https://pymupdf.readthedocs.io/en/latest/)
