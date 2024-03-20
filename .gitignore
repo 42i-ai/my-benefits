@@ -10,7 +10,7 @@ __pycache__/
 
 raw/*
 silver/*
-
+my_benefits/data/*
 
 # Distribution / packaging
 .Python
