@@ -5,7 +5,7 @@
 
 > [!TIP]
 > Consider to use VScode as default python editor. Consider to install Pylint to enforce the python standards.
-> Also the following extensions: vscode-icons, Python Debugger, Python, Pylint, Pylance,Markdown Preview Enhanced, Docker.
+> Also the following extensions: vscode-icons, Python Debugger, Python, Pylint, Pylance,Markdown Preview Enhanced, Docker, TODO Tree.
 > Happy code!!! and have a nice cup of coffe.
 
 The idea of this test is to understand your way of thinking, coding, and problem-solving skills. There is no right answer, just follow your instincts and share with us the solutions of the challenges below:
@@ -108,3 +108,89 @@ https://neurondai.medium.com/how-to-extract-text-from-a-pdf-using-pymupdf-and-py
 TDD DataScience
 https://medium.com/doctolib/yes-test-driven-development-is-useful-in-data-science-857f38208349
 https://towardsdatascience.com/tdd-datascience-689c98492fcc
+
+Tabula can be used to extrac tables
+https://www.youtube.com/watch?v=w2r2Bg42UPY
+
+Read image from pdf
+
+https://www.youtube.com/watch?v=oyqNdcbKhew
+
+Entity Recognition
+
+https://www.youtube.com/watch?v=tMLEPtwFklQ
+
+Antes do Minio
+
+https://www.youtube.com/watch?v=X76h_QPMww0
+
+Minio data lake
+
+https://www.youtube.com/watch?v=5kx5SLlrTH0&t=377s
+
+Extracting and processing table data from PDFs can be quite complex, especially when categorizing and grouping similar elements from multiple tables. Here are the general steps you could follow, along with some Python libraries that might be useful:
+
+### 1. PDF Parsing:
+
+First, you need to extract tables from the PDF files. Libraries like `Tabula` and `PyPDF2` can be useful here.
+
+- **Tabula**: This is a popular library for extracting table data from PDFs. It works well with PDFs that contain well-defined tables.
+- **PyPDF2**: Useful for more general PDF parsing, including text extraction. It might be necessary if you also need to extract contextual information around tables.
+
+### 2. Data Extraction:
+
+Once you have the raw table data, you'll need to clean and preprocess it to ensure it's in a usable format.
+
+- **Pandas**: After extracting tables, you can load this data into Pandas DataFrames for easier manipulation and analysis.
+- **Openpyxl** or **xlrd**: If your tables are exported to Excel format, these libraries can help read and write .xlsx and .xls files, respectively.
+
+### 3. Data Cleaning:
+
+Clean your data to ensure consistency, especially if tables vary in structure or formatting.
+
+- **Regular Expressions (re)**: Useful for cleaning text data, such as removing unwanted characters or standardizing text formats.
+- **Pandas**: Offers numerous functions for data cleaning, including handling missing values, renaming columns, and changing data types.
+
+### 4. Categorization and Similarity Detection:
+
+To categorize and find similar elements, consider the nature of your data. Are you comparing text, numbers, or mixed data?
+
+- **Natural Language Processing (NLP)**: For text data, NLP techniques can help. Libraries like `NLTK` or `spaCy` can assist in text processing, feature extraction, and similarity detection.
+- **Scikit-learn**: Provides numerous algorithms for clustering and classification, which can help group similar elements. Techniques like TF-IDF (for text data), K-Means clustering, or hierarchical clustering might be useful.
+
+### 5. Grouping Similar Elements:
+
+Once you have identified similar elements, you can group them using Pandas functionality or custom algorithms.
+
+- **Pandas**: Use grouping and aggregation functions like `groupby()` to collect similar elements into new tables.
+- **Custom Algorithms**: Depending on your similarity criteria, you might need to implement custom logic to group elements effectively.
+
+### 6. Output:
+
+Finally, you might want to export your grouped tables into a format that's easy to use or analyze further.
+
+- **Pandas**: Can export DataFrames to various formats, including CSV, Excel, JSON, or even back to PDF.
+
+### Example Workflow in Python:
+
+```python
+import tabula
+import pandas as pd
+
+# Step 1: Extract tables from PDF
+tables = tabula.read_pdf("your_file.pdf", pages='all')
+
+# Step 2-3: Process and clean data
+for table in tables:
+    # Perform cleaning operations like removing unwanted rows/columns, standardizing text, etc.
+    pass
+
+# Step 4-5: Categorize and group similar elements
+# This could involve NLP processing, similarity scoring, clustering, etc.
+# Then, use Pandas or custom logic to group similar items.
+
+# Step 6: Export grouped tables
+grouped_table.to_csv("grouped_data.csv")
+```
+
+This workflow is quite high-level. Each step might require significant detail, especially the categorization and grouping of similar elements, which could involve complex logic depending on your specific needs. If you have a particular part of the process you'd like to dive deeper into, let me know!
