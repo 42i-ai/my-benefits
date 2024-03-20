@@ -1,14 +1,17 @@
 """Test the extract_text_from_pdf module"""
 import os
 import shutil
+from typing import List
+import pandas as pd
 import pytest
 import fitz
 from my_benefits.extract_text_from_pdf import open_pdf_file
 from my_benefits.extract_text_from_pdf import write_text_to_file
 from my_benefits.extract_text_from_pdf import extract_text_from_pdf_with_pymupdf
+from my_benefits.extract_text_from_pdf import extract_tables_from_pdf_document
 
 @pytest.fixture
-def fixture_prepare_document_extract_text():
+def prepare_document_extract_text():
     """Prepare test enviroment to extract text"""
     if os.path.isdir("tests/raw"):
         shutil.rmtree("tests/raw")
@@ -59,3 +62,13 @@ class TestExtractTextFromPdf:
         list_of_lines_saved_text = saved_text.splitlines()
         # Then
         assert list_of_lines_pdf[0] == list_of_lines_saved_text[0]
+
+    def test_extract_tables_from_pdf_document(self):
+        """This method aims to test the extraction of tables from a pdf"""
+        # Given
+        pdf_path = "tests/landing/pdf_test_no_ocr.pdf"
+        doc: fitz.Document = open_pdf_file(pdf_path)
+        # When
+        df = extract_tables_from_pdf_document(doc)
+        # Then
+        assert df.empty is False

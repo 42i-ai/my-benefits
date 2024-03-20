@@ -1,3 +1,7 @@
+Focar em NLP
+
+https://medium.com/@mjghadge9007/building-your-own-custom-named-entity-recognition-ner-model-with-spacy-v3-a-step-by-step-guide-15c7dcb1c416
+
 # NLP and Data Extraction Challenge
 
 > [!TIP]
@@ -45,7 +49,7 @@ For the enviroment solution we use Poetry[^2] for manage python depencencies. Th
 
 ### PDFtoText
 
-For to extract information from PDF for further analysis we will to use PDFtoText. According with the article on Medium [^9] the python package PyMuPDF[^10] is a good choice because it preserves tables and original pdf structure.
+For to extract information from PDF for further analysis we will to use PDFtoText. According with the article on Medium [^9] the python package PyMuPDF[^10] is a good choice because it preserves tables and original pdf structure. But after doing test with PyMuPDF the library does not extract tables correctly so I used tabular.
 
 ### Duckdb
 
