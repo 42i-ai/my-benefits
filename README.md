@@ -1,6 +1,11 @@
-Focar em NLP
+O que tenho que entregar hoje:
 
-https://medium.com/@mjghadge9007/building-your-own-custom-named-entity-recognition-ner-model-with-spacy-v3-a-step-by-step-guide-15c7dcb1c416
+> Interação - 1
+> Um docker que quando aperta um botão lê todos os pdfs e gera um grafico de topic modelig.
+> Interação - 2
+> Adicionar duckdb ao processo
+
+> Que tenho que entregar amanhã a mesma coisa utilizando bibliotecas de OCR.
 
 # NLP and Data Extraction Challenge
 
@@ -24,13 +29,24 @@ Automated fundamental data extraction is very useful for large organizations who
 The first challenge is: extract information from all the PDF files found at /data/1
 You can choose your preferred techniques or tools, but be aware that the data you'd extracted may be necessary for the next challenge!
 
-# Solution for extract:
+# Solution for data extract:
 
-For the extraction solution the pipeline will create a raw area where it will save the raw text extract from the file. This approch is usefull if we need to reprocess the data without reprocess the pdf files again. In a solution the pdf files can be storage on a landing area. On the second step of the pipeline will transform the data on tables pre-processing the data. On the last step we will have the analitycs table can be used for datascience purpose.
+To tackle the challenge of data extraction, we will employ four storage layers:
+Landing: Place where the PDF files are landing from external sources.
+Bronze: Data with a low level of transformation(text extraction, table extraction)
+Silver: Pre-processed data extracted text tokenized and lemmatized.
+Gold: Documents after to extract meaningful information.
 
-1 - Read the pdf data and write the extracted data on raw directory in txt format with the same name of the pdf file.
-2 - Clean the data removing spaces, text breaking and lower case the text[^8].
-3 - Write cleaned data on duckdb table[^7].
+We will approach the problem of information extraction in these stages:
+
+1 - Extract textual information from PDF and store it inside the raw directory in a folder named after the PDF file name. The file will be named pfd-file-name-text-extracted.txt.
+2- Extract tables from the PDF and store them in the same folder as the previous step.
+3 - Pre-process the extracted text for lemmatization, stop word removal, and store it in the raw folder.
+
+> [!NOTE]
+> In the production scenario for this solution, we can have two scenarios: Process the files soon,
+> arrive at the landing folder, or schedule batch processing. We can use Airflow[^12] to schedule a job or a
+> lambda function[^11] to trigger when a file arrives in the folder. With those scenarios in mind, we created a container to test possible solutions using Kubernetes.
 
 # Enviroment:
 
@@ -82,6 +98,8 @@ docker run -p 8501:8501 nlp-challenge
 [^8]: [Extracting-information-from-pdf-file-using-OCR-and-NLP](https://github.com/archowdhury/Extracting-information-from-PDF-files-using-OCR-and-NLP/blob/master/PDF%20Extractor.ipynb)
 [^9]: [Python Packages for PDF Data Extraction](https://medium.com/analytics-vidhya/python-packages-for-pdf-data-extraction-d14ec30f0ad0)
 [^10]: [https://pymupdf.readthedocs.io/en/latest/](https://pymupdf.readthedocs.io/en/latest/)
+[^11]: [AWS Lambda Function — Watermarking a PDF via S3 Trigger in Python](https://supremecodr.medium.com/aws-lambda-function-watermarking-a-pdf-via-s3-trigger-in-python-5080b1afb72)
+[^12]: [How to build a data extraction pipeline with Apache Airflow](https://towardsdatascience.com/how-to-build-a-data-extraction-pipeline-with-apache-airflow-fa83cb8dbcdf)
 
 Maybe I can use
 

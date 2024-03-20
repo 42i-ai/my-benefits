@@ -1,7 +1,10 @@
 """This module provides a function to extract text from a PDF file
 First step extract text and tables from each PDF page
+- Focus on extracting entities from the text using spacy
+   https://medium.com/@mjghadge9007/building-your-own-custom-named-entity-recognition-ner-model-with-spacy-v3-a-step-by-step-guide-15c7dcb1c416
 - To extract the text I will use pymupdf
 - To extraxt the tables I will use tabula 
+
 Save each table and text on separated files
 Next step check how to use duckdb to facilitate this process
 Add a button to my app page and run the process to extract the data
