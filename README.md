@@ -100,8 +100,22 @@ docker run -p 8501:8501 nlp-challenge
 [^10]: [https://pymupdf.readthedocs.io/en/latest/](https://pymupdf.readthedocs.io/en/latest/)
 [^11]: [AWS Lambda Function — Watermarking a PDF via S3 Trigger in Python](https://supremecodr.medium.com/aws-lambda-function-watermarking-a-pdf-via-s3-trigger-in-python-5080b1afb72)
 [^12]: [How to build a data extraction pipeline with Apache Airflow](https://towardsdatascience.com/how-to-build-a-data-extraction-pipeline-with-apache-airflow-fa83cb8dbcdf)
+[^13]: [Downloading Multiple Files from DigitalOcean Spaces with Python](https://medium.com/@rahmanazhar/downloading-multiple-files-from-digitalocean-spaces-with-python-1531e3174347)
+[^14] [Document Topic Extraction with Large Language Models (LLM) and the Latent Dirichlet Allocation (LDA) Algorithm](https://medium.com/@rahmanazhar/downloading-multiple-files-from-digitalocean-spaces-with-python-1531e3174347)
+[^15] [Topic Modeling and Semantic Clustering with spaCy](https://fouadroumieh.medium.com/topic-modeling-and-semantic-clustering-with-spacy-960dd4ac3c9a)
+
+duckdb
+
+https://www.youtube.com/watch?v=n0npcfsZvnk
+
+
+streamlit
+
+https://www.youtube.com/watch?v=TkwOmjMtjLk
 
 Maybe I can use
+
+
 
 https://github.com/PBPatil/Keyword-Extracter/tree/master
 https://dashboard.render.com/
@@ -253,6 +267,4 @@ https://stackoverflow.com/questions/64943243/assert-a-list-containing-strings-wi
 https://stackoverflow.com/questions/65819357/python-type-hints-for-spacy
 https://emaddehnavi.medium.com/how-to-download-spacy-models-in-a-poetry-managed-environment-a174f5b77f1d
 https://pynative.com/python-write-list-to-file/
-https://www.mozilla.org/pt-BR/firefox/124.0/whatsnew/?oldversion=123.0.1&utm_medium=firefox-desktop&utm_source=update&utm_campaign=124
-about:home
-https://maisgeek.com/como-copiar-urls-de-todas-as-guias-abertas-no-firefox/
+

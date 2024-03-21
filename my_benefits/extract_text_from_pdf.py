@@ -11,7 +11,9 @@ Add a button to my app page and run the process to extract the data
 """
 import os, re
 import spacy
+from gensim import corpora
 from typing import List, Tuple
+from array import array
 import fitz
 import pandas as pd
 
@@ -31,54 +33,81 @@ def extract_tables_from_pdf_document(doc: fitz.Document) -> pd.DataFrame:
     df: pd.DataFrame = pd.DataFrame()
     return df
 
-def extract_text_from_pdf_with_pymupdf(doc: fitz.Document) -> str:
-    """Extract text from a PDF file and retun it as a string
-       In the future we can create an abstract method to use distinct 
-       libraries to extract text from PDFs
+def extract_text_from_pdf_with_pymupdf(doc: fitz.Document) -> List[str]:
     """
-    tables_list: List[pd.DataFrame] = []
-    text = ""
+    Extract text from each page from a PDF file and retun as a list of strings.
+    
+    Parameters:
+        fitz.Documents: the result of the processing of the library pymupdf.
+    Returns:
+        list: a list of strings where each position is a page from the pdf.
+    """
+    documents: List[str] = []
     for page in doc:
-        text += page.get_text()
+        documents.append(clean_text(page.get_text()))
+    return documents
+
+def clean_text(text):
+    """
+    Clean text 
+    
+    Parameters:
+       str: text extract from pdfs
+    
+    Returns:
+       str: text without line breaks, hyphens, special characters, puctuations 
+    """   
+    text = re.sub(r'-\n', '', text)
+    text = re.sub(r'\n', ' ', text)
+    text = re.sub(r'[^a-zA-Z0-9.\s]', '', text)
+    text = re.sub(r'\d+', '', text)
+    text = re.sub(r'\s+', ' ', text).strip()
     return text
 
-def write_text_to_file(path: str,filename: str, text: str) -> str:
-    """Write text to a file"""
+
+def write_pdf_pages_to_file(path: str,filename: str, pages: List[str]) -> str:
+    """
+    Write pdf pages to a file.
+    
+    Parameters:
+        path (str): path where the function will write the file
+        filename (str): filename which the file will be write
+        text pages (str): pages from the pdf to be write
+    Returns:
+        list: A list of preprocessed tokens.
+    """
     with open(os.path.join( path, filename), "w", encoding="utf-8") as file:
-        file.write(text)
+        for page in pages:
+            file.write(f"{page}\n")
     return path + "/" + filename
 
-def clean_pdf_data(path: str,filename: str) -> str:
-    """Clean data"""
-    with open(os.path.join( path, filename), "r", encoding="utf-8") as file:
-        text = file.read()
-        text = text.replace("\n", " ")
-        text = text.replace("  ", " ")
-    return text
-
-def load_all_pdf_join_them(source_folder: str, destination_folder: str, destination_file: str) -> str:
-    """Load all PDF files from a directory and join them in a single file"""
-    all_pdf_text = []
-    for filename in os.listdir(source_folder):
-        if filename.endswith('.pdf'):
-            pdf_path = os.path.join(source_folder, filename)
-        with open(pdf_path, 'rb') as pdf_file:
-            text = extract_text_from_pdf_with_pymupdf(pdf_file)
-            all_pdf_text.append(text)
-    combined_text = '\n\n'.join(all_pdf_text)  
-    with open(os.path.join( destination_folder, destination_file), 'w', encoding='utf-8') as combined_txt_file:
-        combined_txt_file.write(combined_text)
-    return destination_folder + "/" + destination_file
+def read_processed_pages
 
 def preprocessing_text(text:str, nlp: spacy.language)-> List[str]:
-    """Preprocessing text from pdf"""
-    preprocessed_text: List[str] = []
+    """
+    Tokenizes and preprocesses the input text, removing stopwords and short
+    tokens.
+
+    Parameters:
+        text (str): The input text to preprocess.
+        spacy language: .
+    Returns:
+        list: A list of preprocessed tokens.
+    """
     # Tokenize and preprocess each document
     doc = re.sub(r'\W', ' ', text)
     # Convert text to lowercase
     doc = doc.lower()
     doc = nlp(doc)
     # Lemmatize and remove stop words
-    tokens:List[str] = [token.lemma_ for token in doc if not token.is_stop]
+    tokens:List[str] = []
+    for token in doc:
+        if token.is_alpha and not token.is_stop: 
+            tokens.append(token.text)
     return tokens
-    
+
+def extract_bag_of_words(preprocessed_docs : List[str]) -> dict :
+    """Create a bag of words (BoW) representation for each document using Gensim. """
+    dictionary = corpora.Dictionary(preprocessed_docs)
+    corpus = [dictionary.doc2bow(doc) for doc in preprocessed_docs]
+    return corpus
