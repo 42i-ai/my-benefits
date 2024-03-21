@@ -5,10 +5,12 @@ from typing import List
 import pandas as pd
 import pytest
 import fitz
+import spacy
 from my_benefits.extract_text_from_pdf import open_pdf_file, read_files_from_directory
 from my_benefits.extract_text_from_pdf import write_text_to_file
 from my_benefits.extract_text_from_pdf import extract_text_from_pdf_with_pymupdf
 from my_benefits.extract_text_from_pdf import extract_tables_from_pdf_document
+from my_benefits.extract_text_from_pdf import preprocessing_text
 
 @pytest.fixture
 def prepare_document_extract_text():
@@ -21,6 +23,7 @@ def prepare_document_extract_text():
     os.mkdir("tests/silver")
     pytest.landing_directory =  "tests/landing"
     pytest.raw_directory = "tests/raw"
+    pytest.silver_directory = "tests/silver"
 
 class TestExtractTextFromPdf:
     """Class Test the extract_text_from_pdf module"""
@@ -63,11 +66,31 @@ class TestExtractTextFromPdf:
         # When
         doc: fitz.Document = open_pdf_file(os.path.join(pytest.landing_directory,files[0]))
         text_extracted:str = extract_text_from_pdf_with_pymupdf(doc)
-        list_of_lines_pdf = text_extracted.splitlines()
+        list_of_lines_pdf:List[str] = text_extracted.splitlines()
         write_text_to_file(pytest.raw_directory, text_file_name, text_extracted)
         f = open(os.path.join( pytest.raw_directory, text_file_name), "r", encoding="utf-8")
         saved_text:str = f.read()
         f.close()
-        list_of_lines_saved_text = saved_text.splitlines()
+        list_of_lines_saved_text:List[str] = saved_text.splitlines()
         # Then
         assert list_of_lines_pdf[0] == list_of_lines_saved_text[0]
+
+    def test_extract_text_from_pdf_write_preprocessed(self):
+        """This method aims to test the extraction of text from a pdf, write it to a file and clean it"""
+        # Given
+        files:List[str] = read_files_from_directory(pytest.landing_directory)
+        text_file_name:str = files[0].replace(".pdf", ".txt")
+        # When
+        doc: fitz.Document = open_pdf_file(os.path.join(pytest.landing_directory,files[0]))
+        text_extracted:str = extract_text_from_pdf_with_pymupdf(doc)
+        nlp = spacy.load("en_core_web_sm")
+        preprocessed_text:List[str] = preprocessing_text(text_extracted, nlp)
+        list_to_string:str = "\n".join(preprocessed_text)
+        write_text_to_file(pytest.silver_directory, text_file_name, list_to_string)
+        f = open(os.path.join( pytest.silver_directory, text_file_name), "r", encoding="utf-8")
+        saved_text:str = f.read()
+        f.close()
+        list_of_lines_saved_text:List[str] = saved_text.splitlines()
+        #Then
+        assert len(list_of_lines_saved_text) >0
+    

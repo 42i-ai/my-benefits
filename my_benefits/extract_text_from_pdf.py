@@ -9,7 +9,8 @@ Save each table and text on separated files
 Next step check how to use duckdb to facilitate this process
 Add a button to my app page and run the process to extract the data
 """
-import os
+import os, re
+import spacy
 from typing import List, Tuple
 import fitz
 import pandas as pd
@@ -68,3 +69,16 @@ def load_all_pdf_join_them(source_folder: str, destination_folder: str, destinat
     with open(os.path.join( destination_folder, destination_file), 'w', encoding='utf-8') as combined_txt_file:
         combined_txt_file.write(combined_text)
     return destination_folder + "/" + destination_file
+
+def preprocessing_text(text:str, nlp: spacy.language)-> List[str]:
+    """Preprocessing text from pdf"""
+    preprocessed_text: List[str] = []
+    # Tokenize and preprocess each document
+    doc = re.sub(r'\W', ' ', text)
+    # Convert text to lowercase
+    doc = doc.lower()
+    doc = nlp(doc)
+    # Lemmatize and remove stop words
+    tokens:List[str] = [token.lemma_ for token in doc if not token.is_stop]
+    return tokens
+    
