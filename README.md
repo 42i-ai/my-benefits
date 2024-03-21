@@ -216,3 +216,43 @@ grouped_table.to_csv("grouped_data.csv")
 ```
 
 This workflow is quite high-level. Each step might require significant detail, especially the categorization and grouping of similar elements, which could involve complex logic depending on your specific needs. If you have a particular part of the process you'd like to dive deeper into, let me know!
+
+Abas Abertas
+
+AbasAbertas
+https://chat.openai.com/c/971d6749-4783-43a5-900d-8ad904bd4d37
+https://colab.research.google.com/drive/1Evf5U0KgPnKoXNhpg2DFScG9OHG1YWrZ#scrollTo=LO-Gz8G-NhAw
+https://medium.com/@rahmanazhar/downloading-multiple-files-from-digitalocean-spaces-with-python-1531e3174347
+https://cloud.digitalocean.com/spaces/my-benefits?i=e52d76&path=pdf-no-ocr-data%2F&endpoints=&type=
+https://fouadroumieh.medium.com/topic-modeling-and-semantic-clustering-with-spacy-960dd4ac3c9a
+https://pomofocus.io/
+https://spacy.io/usage/spacy-101
+https://www.udemy.com/course/ocr-for-smart-data-extraction-from-pdf-and-images-with-ner/learn/lecture/34889070?components=add_to_cart%2Cavailable_coupons%2Cbase_purchase_section%2Cbuy_button%2Cbuy_for_team%2Ccacheable_buy_button%2Ccacheable_deal_badge%2Ccacheable_discount_expiration%2Ccacheable_price_text%2Ccacheable_purchase_text%2Ccurated_for_ufb_notice_context%2Ccurriculum_context%2Cdeal_badge%2Cdiscount_expiration%2Cgift_this_course%2Cincentives%2Cinstructor_links%2Clifetime_access_context%2Cmoney_back_guarantee%2Cprice_text%2Cpurchase_tabs_context%2Cpurchase%2Crecommendation%2Credeem_coupon%2Csidebar_container%2Cpurchase_body_container#overview
+https://medium.com/@pranaysuyash/extracting-and-cleaning-data-from-pdfs-a-step-by-step-tutorial-using-python-tabula-and-jupyter-c3e0a8063c28
+https://www.udemy.com/course/computer-vision-ocr-using-python/learn/lecture/25701872#overview
+https://www.udemy.com/course/learn-streamlit-python/learn/lecture/23148022#overview
+https://www.udemy.com/course/hands-on-natural-language-processing-using-python/learn/lecture/10042864#overview
+https://www.udemy.com/course/awesome-natural-language-processing-tools-in-python/?couponCode=KEEPLEARNING
+https://learning.oreilly.com/search/?q=spaCy&type=*&rows=10
+https://learning.oreilly.com/library/view/practical-natural-language/9781492054047/ch02.html#preliminaries
+https://learning.oreilly.com/library/view/mastering-spacy/9781800563353/B16570_Section_1_Final_JM_ePub.xhtml
+https://learning.oreilly.com/library/view/mastering-spacy/9781800563353/B16570_01_Final_JM_ePub.xhtml#_idParaDest-17
+https://www.linkedin.com/learning/hands-on-natural-language-processing/data-preprocessing-for-custom-ner?autoSkip=true&resume=false
+https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.drop_duplicates.html
+https://www.youtube.com/watch?v=bPbwA0wgh3I
+https://rapidapi.com/collection/top-address-validation-api
+https://www.google.com/
+https://radimrehurek.com/gensim/intro.html
+https://app.grammarly.com/ddocs/2404601678
+https://towardsdatascience.com/how-to-build-a-data-extraction-pipeline-with-apache-airflow-fa83cb8dbcdf
+https://docs.github.com/pt/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax
+https://www.digitalocean.com/community/questions/how-to-download-a-private-file-from-spaces-using-boto3
+https://drive.google.com/drive/u/0/folders/1dw5Ib8RnyYbEMXrXvJQmpvjGzVDQiKnU
+https://stackoverflow.com/questions/44441929/how-to-share-global-variables-between-tests
+https://stackoverflow.com/questions/64943243/assert-a-list-containing-strings-with-specific-length
+https://stackoverflow.com/questions/65819357/python-type-hints-for-spacy
+https://emaddehnavi.medium.com/how-to-download-spacy-models-in-a-poetry-managed-environment-a174f5b77f1d
+https://pynative.com/python-write-list-to-file/
+https://www.mozilla.org/pt-BR/firefox/124.0/whatsnew/?oldversion=123.0.1&utm_medium=firefox-desktop&utm_source=update&utm_campaign=124
+about:home
+https://maisgeek.com/como-copiar-urls-de-todas-as-guias-abertas-no-firefox/
