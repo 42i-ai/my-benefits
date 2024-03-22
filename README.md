@@ -25,10 +25,21 @@ You can choose your preferred techniques or tools, but be aware that the data yo
 # Solution for data extract:
 
 To tackle the challenge of data extraction, we will employ four storage layers:
-Landing: Place where the PDF files are landing from external sources.
-Bronze: Data with a low level of transformation(text extraction, table extraction)
-Silver: Pre-processed data extracted text tokenized and lemmatized.
-Gold: Documents after to extract meaningful information.
+
+- _Landing_: Place where the PDF files are landing from external sources.
+- _Bronze_: Data with a low level of transformation(text extraction, table extraction)
+- _Silver_: Pre-processed data extracted text tokenized and lemmatized.
+- _Gold_: Documents after to extract meaningful information.
+
+> [!NOTE]
+> To run the code we should put the pdf files on the data folder inside my_benedits app folder.
+> In our case we have the files on a bucket on s3 to got the files.
+> To use this approach rename the example.env to env and replace the variables.
+> So just run the python script as follows:
+
+```bash
+python my_benefits/get_files.py
+```
 
 We will approach the problem of information extraction in these stages:
 
