@@ -27,6 +27,9 @@ from my_benefits.extract_text_from_pdf import load_pretrained_model
 @pytest.fixture
 def prepare_document_extract_text():
     """Prepare test enviroment to extract text"""
+    if not os.path.isdir("tests/landing"):
+        os.mkdir("tests/landing")
+        os.copy("tests/data/pdf_test_no_ocr.pdf", "tests/landing/pdf_test_no_ocr.pdf")
     if os.path.isdir("tests/raw"):
         shutil.rmtree("tests/raw")
     os.mkdir("tests/raw")
