@@ -19,6 +19,7 @@ from my_benefits.extract_text_from_pdf import write_pdf_pages_to_file
 from my_benefits.extract_text_from_pdf import extract_text_from_pdf_with_pymupdf
 from my_benefits.extract_text_from_pdf import preprocessing_text
 from my_benefits.extract_text_from_pdf import extract_bag_of_words
+from my_benefits.extract_text_from_pdf import read_text_pages_extracted_from_pdf
 
 
 @pytest.fixture
@@ -82,60 +83,30 @@ class TestExtractTextFromPdf:
         # Then
         assert list_of_pages[0] == list_of_lines_saved_text[0]
 
-    def test_extract_text_from_pdf_write_preprocessed(self):
-        """This method aims to test the extraction of text from a pdf, write it to a file and clean it"""
+    def test_test_topic_modelig(self):
         # Given
         files:List[str] = read_files_from_directory(pytest.landing_directory)
         text_file_name:str = files[0].replace(".pdf", ".txt")
-        # When
-        doc: fitz.Document = open_pdf_file(os.path.join(pytest.landing_directory,files[0]))
-        text_extracted:str = extract_text_from_pdf_with_pymupdf(doc)
         nlp = spacy.load("en_core_web_sm")
-        preprocessed_text:List[str] = preprocessing_text(text_extracted, nlp)
-        list_to_string:str = "\n".join(preprocessed_text)
-        write_pdf_pages_to_file(pytest.silver_directory, text_file_name, list_to_string)
-        f = open(os.path.join( pytest.silver_directory, text_file_name), "r", encoding="utf-8")
-        saved_text:str = f.read()
-        f.close()
-        list_of_lines_saved_text:List[str] = saved_text.splitlines()
-        #Then
-        assert len(list_of_lines_saved_text) >0
-    
-    def test_test_topic_modelig(self):
-        
-        nlp = spacy.load("en_core_web_sm")
+        #When
         doc: fitz.Document = open_pdf_file(os.path.join(pytest.landing_directory,'pdf_test_no_ocr.pdf'))
         pages = extract_text_from_pdf_with_pymupdf(doc)
         preprocessed_pages = [preprocessing_text(page, nlp) for page in pages]
         corpus = extract_bag_of_words(preprocessed_pages)
-        assert len(corpus) > 0
-        
-
-        """ #Given
-        nlp = spacy.load("en_core_web_sm")
-        #files:List[str] = read_files_from_directory(pytest.landing_directory)
-        #text_file_name:str = files[0].replace(".pdf", ".txt")
-        doc: fitz.Document = open_pdf_file(os.path.join(pytest.landing_directory,files[0]))
-        text_extracted:str = extract_text_from_pdf_with_pymupdf(doc)
         #Then
-        preprocessed_text:array = []
-        preprocessed_text= preprocessing_text(text_extracted, nlp)
-        
-        nltk.download('stopwords')
-        stop_words = set(stopwords.words(['english','spanish']))
-        processed_documents = [preprocess(doc, stop_words) for doc in text_extracted]
-        
-        dictionary = corpora.Dictionary(preprocessed_text)
-        corpus =[]
-        corpus = dictionary.doc2bow(preprocessed_text)
-        lda_model = LdaModel(corpus=corpus, num_topics=10, id2word=dictionary,passes=15)
-        
-        topics = lda_model.print_topics(num_words=3)
-        topics_ls = []
-        for topic in topics:
-            words = topic[1].split("+")
-            topic_words = [word.split("*")[1].replace('"', '').strip() for word in words]
-            topics_ls.append(topic_words)
-        print(topics_ls)
-        assert  0 == 0
- """
+        assert len(corpus) > 0
+    
+    def test_read_text_pages_extracted_from_pdf(self):
+        #Given
+        files:List[str] = read_files_from_directory(pytest.landing_directory)
+        nlp = spacy.load("en_core_web_sm")
+        doc: fitz.Document = open_pdf_file(os.path.join(pytest.landing_directory,'pdf_test_no_ocr.pdf'))
+        list_of_pages: List[str] = extract_text_from_pdf_with_pymupdf(doc)
+        #When
+        pages_read_from_file: List[str] = read_text_pages_extracted_from_pdf(pytest.raw_directory,'pdf_test_no_ocr.txt')
+        #Then
+        assert list_of_pages[0] == pages_read_from_file[0]
+       
+           
+
+       

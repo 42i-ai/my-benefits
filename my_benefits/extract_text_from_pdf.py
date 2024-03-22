@@ -81,7 +81,21 @@ def write_pdf_pages_to_file(path: str,filename: str, pages: List[str]) -> str:
             file.write(f"{page}\n")
     return path + "/" + filename
 
-def read_processed_pages
+def read_text_pages_extracted_from_pdf(path: str, filename: str) -> List[str]:
+    """
+    Read pages from text file 
+
+    Args:
+        path (str): _description_
+        filename (str): _description_
+
+    Returns:
+        List[str]: _description_
+    """
+    with open(os.path.join( path, filename), "r") as file:
+         saved_pages:str = file.readlines()
+    lines = [page.rstrip('\n') for page in saved_pages]
+    return lines
 
 def preprocessing_text(text:str, nlp: spacy.language)-> List[str]:
     """
