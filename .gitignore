@@ -8,8 +8,9 @@ __pycache__/
 
 # PDF Files
 
-raw/*
-silver/*
+tests/raw/*
+tests/silver/*
+tests/models/*
 my_benefits/data/*
 
 # Distribution / packaging

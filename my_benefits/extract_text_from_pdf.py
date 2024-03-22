@@ -12,6 +12,7 @@ Add a button to my app page and run the process to extract the data
 import os, re
 import spacy
 from gensim import corpora
+from gensim.models.ldamodel import LdaModel
 from typing import List, Tuple
 from array import array
 import fitz
@@ -76,7 +77,8 @@ def write_pdf_pages_to_file(path: str,filename: str, pages: List[str]) -> str:
     Returns:
         list: A list of preprocessed tokens.
     """
-    with open(os.path.join( path, filename), "w", encoding="utf-8") as file:
+    filename_txt = filename.replace(".pdf",".txt")
+    with open(os.path.join( path, filename_txt), "w", encoding="utf-8") as file:
         for page in pages:
             file.write(f"{page}\n")
     return path + "/" + filename
@@ -120,8 +122,23 @@ def preprocessing_text(text:str, nlp: spacy.language)-> List[str]:
             tokens.append(token.text)
     return tokens
 
-def extract_bag_of_words(preprocessed_docs : List[str]) -> dict :
-    """Create a bag of words (BoW) representation for each document using Gensim. """
+def extract_bag_of_words(preprocessed_docs : List[str], path_to_serialize : str) :
+    """
+    Create a bag of words (BoW) and serialize it representation for each document using Gensim.
+    Args:
+        preprocessed_docs (List[str]): pages extracted from pdfs clennead and tokenized
+    """
     dictionary = corpora.Dictionary(preprocessed_docs)
-    corpus = [dictionary.doc2bow(doc) for doc in preprocessed_docs]
-    return corpus
+    bow_corpus = [dictionary.doc2bow(doc) for doc in preprocessed_docs]
+    corpora.MmCorpus.serialize(os.join(path_to_serialize,'bow_corpus.mm'), bow_corpus)
+
+def build_lda_model(corpus : dict) -> dict:
+    """
+    Given the bag of words dictionary return the topic model
+    Args:
+        corpus (dict): dictionary of bag of words
+    """
+    #lda_model = LdaModel(corpus, num_topics=3, id2word=dictionary, passes=15)
+    my_dictionary = {}
+    return my_dictionary
+    
