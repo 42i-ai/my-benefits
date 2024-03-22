@@ -12,8 +12,9 @@ Add a button to my app page and run the process to extract the data
 import os, re
 import spacy
 from gensim import corpora
-from gensim.corpora.mmcorpus import MmCorpus
+
 from gensim.models.ldamodel import LdaModel
+from gensim.corpora.dictionary import Dictionary
 from typing import List, Tuple
 from array import array
 import fitz
@@ -123,41 +124,48 @@ def preprocessing_text(text:str, nlp: spacy.language)-> List[str]:
             tokens.append(token.text)
     return tokens
 
-def generate_bag_of_words(preprocessed_docs : List[str], path_to_serialize : str):
+def generate_pretrained_model(preprocessed_docs : List[str], path_to_serialize : str, num_topics : int = 20, passes : int = 10):
     """
     Create a bag of words (BoW) and serialize it representation for each document using Gensim.
     Args:
         preprocessed_docs (List[str]): pages extracted from pdfs clennead and tokenized
         path_to_serialize (str): path for bag_of_words file
+        num_topics (int): number of topics
+        passes (int): lda algorithm 
     """
     dictionary = corpora.Dictionary(preprocessed_docs)
-    bow_corpus = [dictionary.doc2bow(doc) for doc in preprocessed_docs]
-    corpora.MmCorpus.serialize(os.path.join(path_to_serialize,'bow_corpus.mm'), bow_corpus)
-    print("test")
-
-def load_bag_of_words(path_to_serialize : str) -> MmCorpus:
-    """
-    Load serialized bag of words 
+    dictionary.filter_extremes(no_below=2, no_above=0.5)
+    bow_corpus = [dictionary.doc2bow(doc, allow_update=True) for doc in preprocessed_docs]
+    lda_model = LdaModel(corpus=bow_corpus, id2word=dictionary, num_topics=num_topics, passes=10)
+    lda_model.save(os.path.join(path_to_serialize,'pretrained_lda_model.model'))
+    dictionary.save(os.path.join(path_to_serialize,'pretrained_dictionary.dict'))
+    
+def load_pretrained_model(path_to_serialize : str) -> Tuple[LdaModel, Dictionary] :
+    """_summary_
 
     Args:
-        path_to_serialize (str): path to serialized bag
+        path_to_serialize (str): _description_
 
     Returns:
-        _type_: _description_
+        Tuple[LdaModel, Dictionary]: _description_
     """
-    corpus_load = corpora.MmCorpus(os.path.join(path_to_serialize,'bow_corpus.mm'))
-    return corpus_load
+    pretrained_lda_model = LdaModel.load(os.path.join(path_to_serialize,'pretrained_lda_model.model'))
+    pretrained_dictionary = corpora.Dictionary.load(os.path.join(path_to_serialize,'pretrained_dictionary.dict'))
+    return pretrained_lda_model, pretrained_dictionary
+
+def get_list_of_topics_from_document(preprocessed_docs : List[str], path_pretrained_model : str)-> List[str]:
+    pretrained_lda_model, pretrained_dictionary  = load_pretrained_model(path_pretrained_model)
+    new_corpus = [pretrained_dictionary.doc2bow(doc) for doc in preprocessed_docs]
+    # Classify the new documents using the pre-trained LDA model
+    for i, doc_bow in enumerate(new_corpus):
+        print(f"Document {i+1}:")
+        topic_distribution = pretrained_lda_model[doc_bow]
+        sorted_topics = sorted(topic_distribution, key=lambda x: x[1], reverse=True)
+    return  sorted_topics
 
 
-def build_lda_model(corpus : dict) -> dict:
-    """
-    Given the bag of words dictionary return the topic model
-    Args:
-        corpus (dict): dictionary of bag of words
-    """
-    #lda_model = LdaModel(corpus, num_topics=3, id2word=dictionary, passes=15)
-    my_dictionary = {}
-    return my_dictionary
+
+
 
 
 

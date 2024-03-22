@@ -18,10 +18,10 @@ from my_benefits.extract_text_from_pdf import open_pdf_file, read_files_from_dir
 from my_benefits.extract_text_from_pdf import write_pdf_pages_to_file
 from my_benefits.extract_text_from_pdf import extract_text_from_pdf_with_pymupdf
 from my_benefits.extract_text_from_pdf import preprocessing_text
-from my_benefits.extract_text_from_pdf import generate_bag_of_words
+from my_benefits.extract_text_from_pdf import generate_pretrained_model
 from my_benefits.extract_text_from_pdf import read_text_pages_extracted_from_pdf
-from my_benefits.extract_text_from_pdf import build_lda_model
-from my_benefits.extract_text_from_pdf import load_bag_of_words
+from my_benefits.extract_text_from_pdf import get_list_of_topics_from_document
+from my_benefits.extract_text_from_pdf import load_pretrained_model
 
 
 @pytest.fixture
@@ -102,7 +102,7 @@ class TestExtractTextFromPdf:
         #Then
         assert list_of_pages[0] == pages_read_from_file[0]
 
-    def test_bag_of_words(self):
+    def test_build_pretrained_model(self):
         # Given
         doc: fitz.Document = open_pdf_file(os.path.join(pytest.landing_directory, pytest.file_topic_model))
         list_of_pages: List[str] = extract_text_from_pdf_with_pymupdf(doc)
@@ -110,23 +110,19 @@ class TestExtractTextFromPdf:
         pages_read_from_file: List[str] = read_text_pages_extracted_from_pdf(pytest.raw_directory,pytest.file_topic_model.replace(".pdf",".txt"))
         preprocessed_pages = [preprocessing_text(page, pytest.nlp) for page in pages_read_from_file]
         #When
-        generate_bag_of_words(preprocessed_pages, pytest.models_directory)
+        generate_pretrained_model(preprocessed_pages, pytest.models_directory)
         #Then
-        corpus_loaded = load_bag_of_words(pytest.models_directory)
-        value = ""
-        for line in corpus_loaded:
-            value = line
-        assert len(value) > 0    
+        pretrained_lda_model, pretrained_dictionary = load_pretrained_model(pytest.models_directory)
+        assert len(pretrained_dictionary) > 0 
         
-    #def test_lda(self):
-        # Given
-    #    pages_read_from_file: List[str] = read_text_pages_extracted_from_pdf(pytest.raw_directory, pytest.file_topic_model.replace(".pdf",".txt"))
-    #    preprocessed_pages = [preprocessing_text(page, pytest.nlp) for page in pages_read_from_file]
-    #    generate_bag_of_words(preprocessed_pages, pytest.models_directory)
+    def test_get_list_of_topics_from_document(self):
+        #Given
+        pages_read_from_file: List[str] = read_text_pages_extracted_from_pdf(pytest.raw_directory, pytest.file_topic_model.replace(".pdf",".txt"))
+        preprocessed_pages = [preprocessing_text(page, pytest.nlp) for page in pages_read_from_file]
         #when
-    #    topics = build_lda_model(corpus)
+        sorted_topics:List[str] = get_list_of_topics_from_document(preprocessed_pages,pytest.models_directory)
         #Then
-    #    assert len(topics) > 0
+        assert len(sorted_topics) > 0
         
     
     
