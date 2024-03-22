@@ -2,15 +2,14 @@ import boto3
 import os
 from dotenv import load_dotenv
 
+load_dotenv()
 
-
-
-# DigitalOcean Space details
-ACCESS_ID = os.environ.get('ACCESS_ID')
-SECRET_KEY = os.environ.get('SECRET_KEY')
-ENDPOINT_URL = 'https://nyc3.digitaloceanspaces.com'
 LOCAL_DIRECTORY = 'my_benefits/data'
-SPACE_NAME = os.environ.get('SPACE_NAME')
+# DigitalOcean Space details
+ACCESS_ID = os.getenv('ACCESS_ID')
+SECRET_KEY = os.getenv('SECRET_KEY')
+ENDPOINT_URL = os.getenv('ENDPOINT_URL')
+SPACE_NAME = os.getenv('SPACE_NAME')
 
 session = boto3.session.Session()
 client = session.client(
