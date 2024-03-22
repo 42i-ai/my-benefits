@@ -12,6 +12,7 @@ Add a button to my app page and run the process to extract the data
 import os, re
 import spacy
 from gensim import corpora
+from gensim.corpora.mmcorpus import MmCorpus
 from gensim.models.ldamodel import LdaModel
 from typing import List, Tuple
 from array import array
@@ -81,7 +82,7 @@ def write_pdf_pages_to_file(path: str,filename: str, pages: List[str]) -> str:
     with open(os.path.join( path, filename_txt), "w", encoding="utf-8") as file:
         for page in pages:
             file.write(f"{page}\n")
-    return path + "/" + filename
+    return path + "/" + filename_txt
 
 def read_text_pages_extracted_from_pdf(path: str, filename: str) -> List[str]:
     """
@@ -122,15 +123,31 @@ def preprocessing_text(text:str, nlp: spacy.language)-> List[str]:
             tokens.append(token.text)
     return tokens
 
-def extract_bag_of_words(preprocessed_docs : List[str], path_to_serialize : str) :
+def generate_bag_of_words(preprocessed_docs : List[str], path_to_serialize : str):
     """
     Create a bag of words (BoW) and serialize it representation for each document using Gensim.
     Args:
         preprocessed_docs (List[str]): pages extracted from pdfs clennead and tokenized
+        path_to_serialize (str): path for bag_of_words file
     """
     dictionary = corpora.Dictionary(preprocessed_docs)
     bow_corpus = [dictionary.doc2bow(doc) for doc in preprocessed_docs]
-    corpora.MmCorpus.serialize(os.join(path_to_serialize,'bow_corpus.mm'), bow_corpus)
+    corpora.MmCorpus.serialize(os.path.join(path_to_serialize,'bow_corpus.mm'), bow_corpus)
+    print("test")
+
+def load_bag_of_words(path_to_serialize : str) -> MmCorpus:
+    """
+    Load serialized bag of words 
+
+    Args:
+        path_to_serialize (str): path to serialized bag
+
+    Returns:
+        _type_: _description_
+    """
+    corpus_load = corpora.MmCorpus(os.path.join(path_to_serialize,'bow_corpus.mm'))
+    return corpus_load
+
 
 def build_lda_model(corpus : dict) -> dict:
     """
@@ -141,4 +158,7 @@ def build_lda_model(corpus : dict) -> dict:
     #lda_model = LdaModel(corpus, num_topics=3, id2word=dictionary, passes=15)
     my_dictionary = {}
     return my_dictionary
+
+
+
     
