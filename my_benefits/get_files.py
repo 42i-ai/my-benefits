@@ -2,8 +2,8 @@ import boto3
 import os
 
 # DigitalOcean Space details
-ACCESS_ID = 'DO00BA3N9K64CTJ48ZRR'
-SECRET_KEY = 'rHAsCBgK4yz2sRyBBuJmKBwGLlu2cTPwbQUC7vFpC94'
+ACCESS_ID = os.environ.get('ACCESS_ID')
+SECRET_KEY = os.environ.get('SECRET_KEY')
 ENDPOINT_URL = 'https://nyc3.digitaloceanspaces.com'
 LOCAL_DIRECTORY = 'my_benefits/data'
 SPACE_NAME = 'my-benefits'
