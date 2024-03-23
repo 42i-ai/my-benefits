@@ -66,9 +66,13 @@ You can choose your preferred techniques or tools, be aware that sometimes less 
 
 # Solution for data extract:
 
+We will employ topic modeling to solve this challenge, which is a statistical model used in the discovery of abstract topics that occur in a collection of documents, in this solution. Topics modeling can be fully unsupervised, although semi-supervised and supervised variants exist. Among the most commonly used techniques is latent Dirichlet Allocation (LDA).
+
 Step 1: Load and Pre-process Data
 Step 2: Cluster Data to Identify Groups
 Step 3: AI Generated Labels
+
+As tool for delivery the dashboard we will use Streamlit[^17].
 
 # Architecture
 
@@ -119,3 +123,4 @@ docker run -p 8501:8501 nlp-challenge
 [^14]: [Document Topic Extraction with Large Language Models (LLM) and the Latent Dirichlet Allocation (LDA) Algorithm](https://towardsdatascience.com/document-topic-extraction-with-large-language-models-llm-and-the-latent-dirichlet-allocation-e4697e4dae87)
 [^15]: [Topic Modeling and Semantic Clustering with spaCy](https://fouadroumieh.medium.com/topic-modeling-and-semantic-clustering-with-spacy-960dd4ac3c9a)
 [^16]: [Transforming Data Science: Building a Topic Modelling App with Cohere and Databutton](https://medium.com/databutton/transforming-data-science-building-a-topic-modeling-app-with-cohere-and-databutton-aab5d37e94fa)
+[^17]: [Stremlit](https://docs.streamlit.io/)
