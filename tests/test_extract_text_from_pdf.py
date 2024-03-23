@@ -27,6 +27,10 @@ from my_benefits.extract_text_from_pdf import load_pretrained_model
 @pytest.fixture
 def prepare_document_extract_text():
     """Prepare test enviroment to extract text"""
+    if not os.path.isdir("tests/landing"):
+        os.mkdir("tests/landing")
+        shutil.copyfile("./my_benefits/data/pdf-no-ocr-data/2014BenefitsGuide.pdf", "tests/landing/pdf_test_no_ocr.pdf")
+        shutil.copyfile("./my_benefits/data/pdf-no-ocr-data/Benefits Handbook.pdf", "tests/landing/pdf_for_topic_modeling.pdf")
     if os.path.isdir("tests/raw"):
         shutil.rmtree("tests/raw")
     os.mkdir("tests/raw")
@@ -120,9 +124,9 @@ class TestExtractTextFromPdf:
         pages_read_from_file: List[str] = read_text_pages_extracted_from_pdf(pytest.raw_directory, pytest.file_topic_model.replace(".pdf",".txt"))
         preprocessed_pages = [preprocessing_text(page, pytest.nlp) for page in pages_read_from_file]
         #when
-        sorted_topics:List[str] = get_list_of_topics_from_document(preprocessed_pages,pytest.models_directory)
+        topics_words:List[str] = get_list_of_topics_from_document(preprocessed_pages,pytest.models_directory)
         #Then
-        assert len(sorted_topics) > 0
+        assert len(topics_words) > 0
         
     
     

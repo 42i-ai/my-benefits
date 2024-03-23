@@ -7,7 +7,7 @@ __pycache__/
 *.so
 
 # PDF Files
-
+tests/landing/*
 tests/raw/*
 tests/silver/*
 tests/models/*
@@ -30,6 +30,7 @@ wheels/
 share/python-wheels/
 *.egg-info/
 .installed.cfg
+.env
 *.egg
 MANIFEST
 
