@@ -7,6 +7,7 @@ This solution aims to solve the problem of data extraction from PDF files. We te
 - [ ] Add Duckdb to the extraction pipeline
 - [ ] To container app
 - [ ] Draw an architecture to the solution
+- [ ] Add a git workflow to run test when asking for mergin
 
 > [!TIP]
 > If you have Markdown Preview Enhanced on Vs code, you can preview by (shift + command + v)
