@@ -29,7 +29,8 @@ def prepare_document_extract_text():
     """Prepare test enviroment to extract text"""
     if not os.path.isdir("tests/landing"):
         os.mkdir("tests/landing")
-        os.copy("tests/data/pdf_test_no_ocr.pdf", "tests/landing/pdf_test_no_ocr.pdf")
+        shutil.copyfile("./my_benefits/data/pdf-no-ocr-data/2014BenefitsGuide.pdf", "tests/landing/pdf_test_no_ocr.pdf")
+        shutil.copyfile("./my_benefits/data/pdf-no-ocr-data/Benefits Handbook.pdf", "tests/landing/pdf_for_topic_modeling.pdf")
     if os.path.isdir("tests/raw"):
         shutil.rmtree("tests/raw")
     os.mkdir("tests/raw")
