@@ -59,7 +59,16 @@ def clean_text(text):
     
     Returns:
        str: text without line breaks, hyphens, special characters, puctuations 
-    """   
+    """
+    # Patterns
+    email_pattern = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
+    phone_pattern = r'(\d{3}[-.\s]??\d{3}[-.\s]??\d{4}|\(\d{3}\)\s*\d{3}[-.\s]??\d{4}|\d{3}[-.\s]??\d{4})'
+    url_pattern = r'\b(?:http[s]?://|www\.)[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|/))'
+
+    # Removing entities
+    text = re.sub(email_pattern, '', text)
+    text = re.sub(phone_pattern, '', text)
+    text = re.sub(url_pattern, '', text)   
     text = re.sub(r'-\n', '', text)
     text = re.sub(r'\n', ' ', text)
     text = re.sub(r'[^a-zA-Z0-9.\s]', '', text)
@@ -110,7 +119,7 @@ def preprocessing_text(text:str, nlp: spacy.language)-> List[str]:
         text (str): The input text to preprocess.
         spacy language: .
     Returns:
-        list: A list of preprocessed tokens.
+        list: A list of lemmatized preprocessed tokens.
     """
     # Tokenize and preprocess each document
     doc = re.sub(r'\W', ' ', text)
@@ -120,8 +129,8 @@ def preprocessing_text(text:str, nlp: spacy.language)-> List[str]:
     # Lemmatize and remove stop words
     tokens:List[str] = []
     for token in doc:
-        if token.is_alpha and not token.is_stop: 
-            tokens.append(token.text)
+        if token.is_alpha and not token.is_stop and len(token) > 3: 
+            tokens.append(token.lemma_)
     return tokens
 
 def generate_pretrained_model(preprocessed_docs : List[str], path_to_serialize : str, num_topics : int = 20, passes : int = 10):

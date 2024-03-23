@@ -2,7 +2,6 @@
 import os
 import re
 import shutil
-from pypdf import PdfReader
 from pprint import pprint
 from typing import List
 import pandas as pd
@@ -11,8 +10,6 @@ from gensim.models.ldamodel import LdaModel
 import pytest
 import fitz
 import spacy
-import nltk
-from nltk.corpus import stopwords
 from array import array
 from my_benefits.extract_text_from_pdf import open_pdf_file, read_files_from_directory
 from my_benefits.extract_text_from_pdf import write_pdf_pages_to_file
