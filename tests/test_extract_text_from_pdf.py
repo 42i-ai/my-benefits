@@ -124,9 +124,9 @@ class TestExtractTextFromPdf:
         pages_read_from_file: List[str] = read_text_pages_extracted_from_pdf(pytest.raw_directory, pytest.file_topic_model.replace(".pdf",".txt"))
         preprocessed_pages = [preprocessing_text(page, pytest.nlp) for page in pages_read_from_file]
         #when
-        sorted_topics:List[str] = get_list_of_topics_from_document(preprocessed_pages,pytest.models_directory)
+        topics_words:List[str] = get_list_of_topics_from_document(preprocessed_pages,pytest.models_directory)
         #Then
-        assert len(sorted_topics) > 0
+        assert len(topics_words) > 0
         
     
     

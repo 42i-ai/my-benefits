@@ -154,6 +154,8 @@ def load_pretrained_model(path_to_serialize : str) -> Tuple[LdaModel, Dictionary
     return pretrained_lda_model, pretrained_dictionary
 
 def get_list_of_topics_from_document(preprocessed_docs : List[str], path_pretrained_model : str)-> List[str]:
+    """_summary_
+    """
     pretrained_lda_model, pretrained_dictionary  = load_pretrained_model(path_pretrained_model)
     new_corpus = [pretrained_dictionary.doc2bow(doc) for doc in preprocessed_docs]
     # Classify the new documents using the pre-trained LDA model
@@ -161,7 +163,12 @@ def get_list_of_topics_from_document(preprocessed_docs : List[str], path_pretrai
         print(f"Document {i+1}:")
         topic_distribution = pretrained_lda_model[doc_bow]
         sorted_topics = sorted(topic_distribution, key=lambda x: x[1], reverse=True)
-    return  sorted_topics
+    topics_words = []
+    for topic_id, _ in sorted_topics:
+            topic_words = pretrained_lda_model.show_topic(topic_id)
+            for word, prob in topic_words:
+                topics_words.append(f"\t{word} (Probability: {prob:.3f})")
+    return  topic_words
 
 
 
