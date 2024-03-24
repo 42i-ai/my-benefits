@@ -59,6 +59,12 @@ Step 3 - Pre-process the extracted text for lemmatization, stop word removal, an
 > arrive at the landing folder, or schedule batch processing. We can use Airflow[^12] to schedule a job or a
 > lambda function[^11] to trigger when a file arrives in the folder. Considering those scenarios, we created a container to test possible solutions using Kubernetes.
 
+_Step 1 - Extract PFD_
+
+To extract information from PDF for further analysis, we will use PyMuPDF[10]. According to the article on Medium [9], the Python package PyMuPDF is a good choice because it preserves tables and the original PDF structure.
+
+DuckDB aims to create a fast and efficient SQL query execution engine that can run complex queries on large data sets. It integrates tightly with Pandas DataFrames and allows us to run these queries directly on top of them without needing to move data in and out of the dataframe[^7][^18].
+
 2 - Data Visualization
 
 The second challenge is: display meaningful information from the extracted data (challenge 1)
@@ -83,21 +89,6 @@ streamlit run my_benefits/app.py
 # Enviroment:
 
 For the environment solution, we use Poetry[2] to manage Python dependencies. The solution will be packaged in a docker compose file, which can be used to deploy it to production and execute tests on the CD/CI process.
-
-## Libraries used on this project:
-
-### PDFtoText
-
-To extract information from PDF for further analysis, we will use PDFtoText. According to the article on Medium [9], the Python package PyMuPDF[10] is a good choice because it preserves tables and the original PDF structure. However, after testing with PyMuPDF, the library does not extract tables correctly, so I used tabular.
-
-### Duckdb
-
-DuckDB aims to create a fast and efficient SQL query execution engine that can run complex queries on large data sets. It integrates tightly with Pandas DataFrames and allows us to run these queries directly on top of them without needing to move data in and out of the dataframe[7].
-
-- Mypds
-- streamlit[^1]
-
-I will use pypdf2 to extract text from the PDF and write the data as json.
 
 ```bash
 docker build -t nlp-challenge -f my_benefits/extract/Dockerfile --no-cache --progress=plain . 2>&1 | tee build.log
@@ -128,3 +119,4 @@ docker run -p 8501:8501 nlp-challenge
 [^15]: [Topic Modeling and Semantic Clustering with spaCy](https://fouadroumieh.medium.com/topic-modeling-and-semantic-clustering-with-spacy-960dd4ac3c9a)
 [^16]: [Transforming Data Science: Building a Topic Modelling App with Cohere and Databutton](https://medium.com/databutton/transforming-data-science-building-a-topic-modeling-app-with-cohere-and-databutton-aab5d37e94fa)
 [^17]: [Stremlit](https://docs.streamlit.io/)
+[^18]: [Birds versus Bear: Comparing DuckDB and Polars ](https://www.linkedin.com/pulse/bird-versus-bear-comparing-duckdb-polars-jorrit-sandbrink-xdfoe/)

@@ -85,7 +85,7 @@ def get_list_of_words_from_document()-> pd.DataFrame:
     saved_documents:str = f.read()
     list_of_lines_saved_documents:List[str] = saved_documents.splitlines()
     for pages in list_of_lines_saved_documents:  
-        for word in pages.split():
+        for word in pages:
             print(word) 
     df : pd.DataFrame = pd.DataFrame(list_of_lines_saved_documents, columns=['Number', 'Letter'])
     return df

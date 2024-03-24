@@ -132,7 +132,7 @@ def write_preprocessed_corpus_to_file(
                                     path_corpus: str, 
                                     filename: str,
                                     nlp: spacy.language
-                                    ):
+                                    ) -> str:
     """
     Write preprocessed corpus to a file.
     
@@ -141,6 +141,8 @@ def write_preprocessed_corpus_to_file(
         path_corpus (str): path where we will write the corpus file
         filename (str): filename which the file will be write
         nlp (spacy.language): spacy language model
+    Returns:
+        str: path and file name.
     """
     documents : List[str]= [] 
     for file in read_files_from_directory(path_all_documents):
@@ -153,7 +155,6 @@ def write_preprocessed_corpus_to_file(
     with open(os.path.join( path_corpus, filename), "w", encoding="utf-8") as file:
         for doc in documents:
             file.write(f"{doc}\n")
-    
 
 def generate_pretrained_model(preprocessed_docs : List[str], path_to_serialize : str, num_topics : int = 20, passes : int = 10):
     """
