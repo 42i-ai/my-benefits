@@ -3,7 +3,14 @@ import pandas as pd
 import seaborn as sns
 from matplotlib import pyplot as plt
 from streamlit_option_menu import option_menu
+from train_model import extract_pdf_text
+DEFAULT_HIGHLIGHT_PROBABILITY_MINIMUM = 0.001
+DEFAULT_NUM_TOPICS = 6
 
+def extract_information_from_the_pdf_files():
+    # Code that gets executed when the button is clicked
+    with st.spinner('Extracting text from documents ...'):
+         extract_pdf_text()
 
 
 st.set_page_config(
@@ -28,3 +35,13 @@ if selected == 'Dashboard':
     # st.write('')
     st.markdown("---")
 
+preprocessing_options = st.sidebar.form('preprocessing-options')
+
+with preprocessing_options:
+        st.header('Extract data from PDF files')
+        submitted = st.form_submit_button("Extract Data")
+
+
+if submitted:
+    extract_information_from_the_pdf_files()
+    st.write('Data has been extracted from the PDF files')

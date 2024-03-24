@@ -30,12 +30,6 @@ def open_pdf_file(pdf_path: str) -> fitz.Document:
     """Open a PDF file and return a fitz.Document object"""
     return fitz.open(pdf_path)
 
-def extract_tables_from_pdf_document(doc: fitz.Document) -> pd.DataFrame:
-    """This can be used to extract tables https://www.youtube.com/watch?v=w2r2Bg42UPY"""
-     
-    df: pd.DataFrame = pd.DataFrame()
-    return df
-
 def extract_text_from_pdf_with_pymupdf(doc: fitz.Document) -> List[str]:
     """
     Extract text from each page from a PDF file and retun as a list of strings.
@@ -117,7 +111,7 @@ def preprocessing_text(text:str, nlp: spacy.language)-> List[str]:
 
     Parameters:
         text (str): The input text to preprocess.
-        spacy language: .
+        nlp (spacy.language): spacy language model
     Returns:
         list: A list of lemmatized preprocessed tokens.
     """
@@ -132,6 +126,34 @@ def preprocessing_text(text:str, nlp: spacy.language)-> List[str]:
         if token.is_alpha and not token.is_stop and len(token) > 3: 
             tokens.append(token.lemma_)
     return tokens
+
+def write_preprocessed_corpus_to_file( 
+                                    path_all_documents: str,  
+                                    path_corpus: str, 
+                                    filename: str,
+                                    nlp: spacy.language
+                                    ):
+    """
+    Write preprocessed corpus to a file.
+    
+    Parameters:
+        path_all_documents (str): path where we will write the all documents file
+        path_corpus (str): path where we will write the corpus file
+        filename (str): filename which the file will be write
+        nlp (spacy.language): spacy language model
+    """
+    documents : List[str]= [] 
+    for file in read_files_from_directory(path_all_documents):
+        pages_read_from_file: List[str] = read_text_pages_extracted_from_pdf(
+                                                                    path_all_documents, 
+                                                                    file
+                                                                           )
+        preprocessed_pages = [preprocessing_text(page, nlp) for page in pages_read_from_file]
+        documents.extend(preprocessed_pages)
+    with open(os.path.join( path_corpus, filename), "w", encoding="utf-8") as file:
+        for doc in documents:
+            file.write(f"{doc}\n")
+    
 
 def generate_pretrained_model(preprocessed_docs : List[str], path_to_serialize : str, num_topics : int = 20, passes : int = 10):
     """

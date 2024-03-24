@@ -19,6 +19,7 @@ from my_benefits.extract_text_from_pdf import generate_pretrained_model
 from my_benefits.extract_text_from_pdf import read_text_pages_extracted_from_pdf
 from my_benefits.extract_text_from_pdf import get_list_of_topics_from_document
 from my_benefits.extract_text_from_pdf import load_pretrained_model
+from my_benefits.extract_text_from_pdf import write_preprocessed_corpus_to_file
 
 
 @pytest.fixture
@@ -34,21 +35,27 @@ def prepare_document_extract_text():
     if os.path.isdir("tests/silver"):
         shutil.rmtree("tests/silver")
     os.mkdir("tests/silver")
+    if os.path.isdir("tests/gold"):
+        shutil.rmtree("tests/gold")
+    os.mkdir("tests/gold")
     if os.path.isdir("tests/models"):
         shutil.rmtree("tests/models")
     os.mkdir("tests/models")
     pytest.landing_directory =  "tests/landing"
     pytest.raw_directory = "tests/raw"
     pytest.silver_directory = "tests/silver"
+    pytest.gold_directory = "tests/gold"
     pytest.models_directory = "tests/models"
     pytest.file_for_test = "pdf_test_no_ocr.pdf"
     pytest.file_topic_model = "pdf_for_topic_modeling.pdf"
     pytest.nlp = spacy.load("en_core_web_sm")
 
+#TODO: Do we need to rethink these test as bdd?
+#TODO: We need think better the tests because we wrote some dependencies between the tests, we need to make them independent and create bbd for testing all the process.
 class TestExtractTextFromPdf:
     """Class Test the extract_text_from_pdf module"""
     
-    def test_read_files_from_directory(self, prepare_document_extract_text):
+    def test_read_files_from_directory(self, prepare_document_extract_text: None):
         """This method aims to test the read_files_from_directory method"""
         # Given pytest.directory
         # When
@@ -78,6 +85,7 @@ class TestExtractTextFromPdf:
         result:str = write_pdf_pages_to_file(pytest.raw_directory, filename, text)
         exist:bool = os.path.isfile(result)
         # Then
+        os.remove(result)
         assert exist is True
 
     def test_extract_text_from_pdf_write_to_file(self):
@@ -124,6 +132,25 @@ class TestExtractTextFromPdf:
         topics_words:List[str] = get_list_of_topics_from_document(preprocessed_pages,pytest.models_directory)
         #Then
         assert len(topics_words) > 0
+
+    def test_write_preprocessed_corpus_to_file(self):
+        #Given
+        file_name:str = "all_processed_documents.txt"
+        documents : List[str]= [] 
+        for file in read_files_from_directory(pytest.raw_directory):
+            pages_read_from_file: List[str] = read_text_pages_extracted_from_pdf(pytest.raw_directory, file)
+            preprocessed_pages = [preprocessing_text(page, pytest.nlp) for page in pages_read_from_file]
+            documents.extend(preprocessed_pages)
+        #When
+        result:str = write_preprocessed_corpus_to_file(pytest.raw_directory,pytest.silver_directory, file_name,  pytest.nlp)
+        f = open(os.path.join( pytest.silver_directory, file_name), "r", encoding="utf-8")
+        saved_documents:str = f.read()
+        f.close()
+        list_of_lines_saved_documents:List[str] = saved_documents.splitlines()
+        #Then
+        assert len(documents) == len(list_of_lines_saved_documents)
+
+    
         
     
     
