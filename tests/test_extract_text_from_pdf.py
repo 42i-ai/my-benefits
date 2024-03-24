@@ -135,7 +135,7 @@ class TestExtractTextFromPdf:
 
     def test_write_preprocessed_corpus_to_file(self):
         #Given
-        file_name:str = "all_processed_documents.txt"
+        file_name:str = "all_preprocessed_documents.txt"
         documents : List[str]= [] 
         for file in read_files_from_directory(pytest.raw_directory):
             pages_read_from_file: List[str] = read_text_pages_extracted_from_pdf(pytest.raw_directory, file)

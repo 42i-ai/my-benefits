@@ -7,6 +7,7 @@ from datetime import datetime
 import logging
 import spacy
 import fitz
+import pandas as pd
 from typing import List
 from extract_text_from_pdf import extract_text_from_pdf_with_pymupdf
 from extract_text_from_pdf import read_files_from_directory 
@@ -18,13 +19,14 @@ from extract_text_from_pdf import generate_pretrained_model
 from extract_text_from_pdf import get_list_of_topics_from_document
 from extract_text_from_pdf import write_preprocessed_corpus_to_file
 
-
+#TODO: Probabily this all file will become a kind of storage class to persist the data
 PDF_NO_OCR_PATH = "./my_benefits/data/pdf-no-ocr-data"
 RAW_DIRECTORY = "./my_benefits/raw"
 SILVER_DIRECTORY = "./my_benefits/silver"
 GOLD_DIRECTORY = "./my_benefits/gold"
 MODELS_DIRECTORY = "./my_benefits/models"
 LOGS_DIRECTORY = "./my_benefits/logs"
+DOCUMENT_CORPUS = "all_preprocessed_documents.txt" 
 
 if not os.path.exists(PDF_NO_OCR_PATH):
     os.makedirs(PDF_NO_OCR_PATH)
@@ -73,7 +75,21 @@ def write_corpus_to_file():
     """
     Write the preprocessed corpus to a file
     """
-    write_preprocessed_corpus_to_file(RAW_DIRECTORY,SILVER_DIRECTORY, "all_preprocessed_documents.txt", nlp)
+    write_preprocessed_corpus_to_file(RAW_DIRECTORY,SILVER_DIRECTORY, DOCUMENT_CORPUS, nlp)
+
+def get_list_of_words_from_document()-> pd.DataFrame:
+    """
+    Get the list of words from the document corpus
+    """
+    f = open(os.path.join( SILVER_DIRECTORY,DOCUMENT_CORPUS), "r", encoding="utf-8")
+    saved_documents:str = f.read()
+    list_of_lines_saved_documents:List[str] = saved_documents.splitlines()
+    for pages in list_of_lines_saved_documents:  
+        for word in pages.split():
+            print(word) 
+    df : pd.DataFrame = pd.DataFrame(list_of_lines_saved_documents, columns=['Number', 'Letter'])
+    return df
+
 
 
 #TODO: Add an function to persist preprecessded text in a file
@@ -104,3 +120,4 @@ def extract_topics_from_documents():
 #extract_pdf_text()
 #train_model()
 #extract_topics_from_documents()
+get_list_of_words_from_document()
