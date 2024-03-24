@@ -16,6 +16,7 @@ from extract_text_from_pdf import open_pdf_file
 from extract_text_from_pdf import read_text_pages_extracted_from_pdf
 from extract_text_from_pdf import generate_pretrained_model
 from extract_text_from_pdf import get_list_of_topics_from_document
+from extract_text_from_pdf import write_preprocessed_corpus_to_file
 
 
 PDF_NO_OCR_PATH = "./my_benefits/data/pdf-no-ocr-data"
@@ -68,7 +69,11 @@ def extract_pdf_text():
         write_pdf_pages_to_file(RAW_DIRECTORY, file.replace(".pdf", ".txt"), pages)
         logger.debug(f'file processed {file}')
 
-
+def write_corpus_to_file():
+    """
+    Write the preprocessed corpus to a file
+    """
+    write_preprocessed_corpus_to_file(RAW_DIRECTORY,SILVER_DIRECTORY, "all_preprocessed_documents.txt", nlp)
 
 
 #TODO: Add an function to persist preprecessded text in a file

@@ -64,7 +64,7 @@ Step 3 - Pre-process the extracted text for lemmatization, stop word removal, an
 The second challenge is: display meaningful information from the extracted data (challenge 1)
 You can choose your preferred techniques or tools, be aware that sometimes less is more, present meaningful insights, and show us what you have found interesting on those files! (i.e: topic modeling, word distributions, etc)
 
-# Solution for data extract:
+# Solution for visualization:
 
 We will employ topic modeling to solve this challenge, which is a statistical model used in the discovery of abstract topics that occur in a collection of documents, in this solution. Topics modeling can be fully unsupervised, although semi-supervised and supervised variants exist. Among the most commonly used techniques is latent Dirichlet Allocation (LDA).
 
@@ -72,7 +72,11 @@ Step 1: Load and Pre-process Data
 Step 2: Cluster Data to Identify Groups
 Step 3: AI Generated Labels
 
-As tool for delivery the dashboard we will use Streamlit[^17].
+As tool for visualization we will use Streamlit[^17]. Streamlit is a powerful open-source Python library designed to effortlessly transform machine learning and data science projects into interactive web apps, ideal for sharing complex insights with non-technical audiences. Its standout feature is the rapid development cycle, allowing scripts to become fully functional web applications in mere hours, enhancing communication with decision-makers. Streamlit's pure Python approach obviates the need for web development expertise, streamlining the workflow for data scientists. Despite its simplicity, Streamlit efficiently handles user interactions through an immediate mode UI and smart caching, ensuring a smooth and responsive user experience. This blend of ease of use, quick development, and no requirement for additional web technology skills makes Streamlit a highly accessible tool for sharing data-driven insights. To run the Stremlit app from the project folder exectue the following code:
+
+```bash
+streamlit run my_benefits/app.py
+```
 
 # Architecture
 

@@ -4,14 +4,26 @@ import seaborn as sns
 from matplotlib import pyplot as plt
 from streamlit_option_menu import option_menu
 from train_model import extract_pdf_text
+from train_model import write_corpus_to_file
+from wordcloud import WordCloud
 DEFAULT_HIGHLIGHT_PROBABILITY_MINIMUM = 0.001
 DEFAULT_NUM_TOPICS = 6
+WORDCLOUD_FONT_PATH = r'./assets/Inkfree.ttf'
 
 def extract_information_from_the_pdf_files():
     # Code that gets executed when the button is clicked
     with st.spinner('Extracting text from documents ...'):
          extract_pdf_text()
+    with st.spinner('Writting preprocessed document to file ...'):
+         write_corpus_to_file()
 
+@st.experimental_memo()
+def generate_wordcloud():
+
+    wordcloud_text = (' '.join(' '.join(doc) for doc in docs))
+    wordcloud = WordCloud(font_path=WORDCLOUD_FONT_PATH, width=700, height=600,
+                          background_color='white', collocations=collocations).generate(wordcloud_text)
+    return wordcloud
 
 st.set_page_config(
     page_title="My Benefits", 
@@ -20,7 +32,7 @@ st.set_page_config(
     initial_sidebar_state="auto", 
     menu_items=None)
 
-with st.sidebar:
+""" with st.sidebar:
     selected = option_menu("Main Menu", ["Dashboard","Data Visualization"], 
         icons=['house','pie-chart'], menu_icon="cast", default_index=0)
     selected
@@ -33,7 +45,7 @@ if selected == 'Dashboard':
     
     st.write('Silahkan Upload File dan Pilih Menu Sidebar untuk mulai melakukan analisa')
     # st.write('')
-    st.markdown("---")
+    st.markdown("---") """
 
 preprocessing_options = st.sidebar.form('preprocessing-options')
 
