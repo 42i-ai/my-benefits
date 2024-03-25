@@ -43,7 +43,7 @@ To tackle the challenge of data extraction, we will employ four storage layers:
 > To use this approach, rename the example.env to env and replace the variables.
 > So just run the Python script [^13] as follows:
 
-"`bash
+```bash
 python my_benefits/get_files.py
 ```
 
