@@ -61,7 +61,7 @@ class ExtractTextFromPDFController:
         schema = [
             ("filename", pl.String),
             ("page_number", pl.Int64),
-            ("text", pl.String)
+            ("text", pl.String),
             ("is_ocr", pl.Boolean)
         ]
         df = pl.DataFrame({name: pl.Series([], dtype=dtype)

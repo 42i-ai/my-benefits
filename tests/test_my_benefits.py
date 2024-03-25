@@ -22,7 +22,7 @@ def prepare_document_extract_text():
                         "tests/landing/pdf-no-ocr-data/pdf_test_no_ocr.pdf")
         shutil.copyfile("./my_benefits/data/pdf-no-ocr-data/Benefits Handbook.pdf",
                         "tests/landing/pdf-no-ocr-data/pdf_for_topic_modeling.pdf")
-        shutil.copyfile("./my_benefits/data/pdf-ocr-data/Benefits Handbook.pdf",
+        shutil.copyfile("./my_benefits/data/pdf-ocr-data/employee_benefits_3.pdf",
                         "tests/landing/pdf-ocr-data/employee_benefits_3.pdf")
 
     if os.path.isdir("tests/raw"):
@@ -145,7 +145,8 @@ class TestDocumentModel:
                                                   SELECT 
                                                   filename,
                                                   page_number,    
-                                                  text
+                                                  text,
+                                                  is_ocr
                                                   FROM 
                                                   document_pages
                                                   """

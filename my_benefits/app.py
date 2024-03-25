@@ -14,13 +14,14 @@ from typing import List, Tuple
 
 WORDCLOUD_FONT_PATH = "./my_benefits/assets/Inkfree.ttf"
 PDF_NO_OCR_PATH = "./my_benefits/data/pdf-no-ocr-data"
+PDF_OCR_PATH = "./my_benefits/data/pdf-ocr-data"
 
 RAW_DIRECTORY = "./my_benefits/raw"
 SILVER_DIRECTORY = "./my_benefits/silver"
 GOLD_DIRECTORY = "./my_benefits/gold"
 MODELS_DIRECTORY = "./my_benefits/models"
 LOGS_DIRECTORY = "./my_benefits/logs"
-DOCUMENT_CORPUS = "all_preprocessed_documents.txt"
+
 
 if not os.path.exists(PDF_NO_OCR_PATH):
     os.makedirs(PDF_NO_OCR_PATH)
@@ -47,9 +48,13 @@ topic_modeling = TopicModeling()
 wordcloud_image = WordCloud(font_path=WORDCLOUD_FONT_PATH, width=700, height=600,
                             background_color='white', collocations=True).generate("My benefits word cloud")
 
-li = [os.path.splitext(filename)[0]
-      for filename in os.listdir(PDF_NO_OCR_PATH)]
-li.insert(0, 'Select a file')
+li_no_ocr = [os.path.splitext(filename)[0]
+             for filename in os.listdir(PDF_NO_OCR_PATH)]
+li_no_ocr.insert(0, 'Please select a no ocr file')
+
+li_ocr = [os.path.splitext(filename)[0]
+          for filename in os.listdir(PDF_OCR_PATH)]
+li_ocr.insert(0, 'Please select a ocr file')
 
 
 def preprocessing_text() -> pl.DataFrame:
@@ -66,7 +71,8 @@ def preprocessing_text() -> pl.DataFrame:
                                                   SELECT 
                                                   filename,
                                                   page_number,    
-                                                  text
+                                                  text,
+                                                  is_ocr 
                                                   FROM 
                                                   document_pages
                                                   """
@@ -96,19 +102,19 @@ def extract_information_from_the_pdf_files():
         topic_modeling.train_model(preprocessed_documents)
 
 
-def generate_wordcloud(selected_event: str = None):
+def generate_wordcloud(selected_event: str = None, is_ocr: bool = False):
 
     # df = get_list_of_words_from_document()
     # wordcloud_text = ' '.join(df['Letter'].tolist())
     # wordcloud = WordCloud(font_path=WORDCLOUD_FONT_PATH, width=700, height=600,
     # background_color='white', collocations=True).generate(wordcloud_text)
     if selected_event is None:
-        st.write('Please select a file')
+        st.write('Please select a no ocr / ocr file')
         return
-    if select_event == 'Select a file':
-        st.write('Please select a file')
+    if selected_event.lower() in 'please':
+        st.write('Please select a no ocr / ocr file')
         return
-    with st.spinner(f'Generate word cloud for the document {select_event} ...'):
+    with st.spinner(f'Generate word cloud for the document {selected_event} ...'):
         connection_silver = duckdb.connect(
             document_model.get_silver_database_dir())
         filename: str = selected_event + '.pdf'
@@ -122,6 +128,9 @@ def generate_wordcloud(selected_event: str = None):
                                         where filename = '{filename}')
                                         subquery
                                     """).fetchall()[0][0].split(',')
+        if len(document_tokens) == 0:
+            st.write('No data found for the selected file')
+            return
 
         topics_words = topic_modeling.get_list_of_topics_from_document(
             document_tokens, MODELS_DIRECTORY)
@@ -144,11 +153,6 @@ st.set_page_config(
     initial_sidebar_state="auto",
     menu_items=None)
 
-# with st.expander('Frequency Sized Corpus Wordcloud'):
-#    st.image(wordcloud_image.to_image(
-#    ), caption='Dataset Wordcloud (Not A Topic Model)', use_column_width=True)
-#    st.markdown(
-#        'These are the remaining words after document preprocessing.')
 
 preprocessing_options = st.sidebar.form('preprocessing-options')
 
@@ -156,21 +160,27 @@ with preprocessing_options:
     st.header('Extract data from PDF files')
     submitted_extract_data = st.form_submit_button("Extract Data")
 
-visualization_options = st.sidebar.form('visualization-options')
+visualization_options_no_ocr = st.sidebar.form('visualization-options-no-ocr')
 
-with visualization_options:
+visualization_options_ocr = st.sidebar.form('visualization-options-ocr')
+
+with visualization_options_no_ocr:
     st.header('Visualize data from no ocr pdf files')
-    select_event = st.selectbox('Select Files no ocr', li)
-    submitted_visualize_data = st.form_submit_button("Visualize Data")
+    select_event_no_ocr = st.selectbox('Select Files no ocr', li_no_ocr)
+    submitted_visualize_data_no_ocr = st.form_submit_button(
+        "Visualize Data no OCR")
 
-with visualization_options:
-    st.header('Visualize data from  ocr pdf files')
-    select_event = st.selectbox('Select Files ocr', li)
-    submitted_visualize_data = st.form_submit_button("Visualize Data")
+with visualization_options_ocr:
+    st.header('Visualize data from ocr pdf files')
+    select_event_ocr = st.selectbox('Select Files ocr', li_ocr)
+    submitted_visualize_data_ocr = st.form_submit_button("Visualize Data OCR")
 
 if submitted_extract_data:
     extract_information_from_the_pdf_files()
     st.write('Data has been extracted from the PDF files')
 
-if submitted_visualize_data:
-    wordcloud_image = generate_wordcloud(selected_event=select_event)
+if submitted_visualize_data_no_ocr:
+    generate_wordcloud(selected_event=select_event_no_ocr)
+
+if submitted_visualize_data_ocr:
+    generate_wordcloud(selected_event=select_event_ocr, is_ocr=True)
