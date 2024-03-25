@@ -4,7 +4,7 @@ This solution aims to solve the problem of data extraction from PDF files. We te
 
 - [ ] Create a dashboard app to preset topic modeling (think of a better way to store data)
 - [ ] Extract data from OCR pdf (This task is working. We can solve the dashboard for OCR in the same way as the previous step)
-- [ ] Add Duckdb to the extraction pipeline
+- [x] Add Duckdb to the extraction pipeline
 - [ ] To container app
 - [ ] Draw an architecture for the solution
 
