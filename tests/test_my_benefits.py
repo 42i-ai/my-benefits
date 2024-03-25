@@ -8,6 +8,7 @@ import duckdb
 from my_benefits.extract_text_from_pdf_controller import ExtractTextFromPDFController
 from my_benefits.document_model import DocumentsModel
 from my_benefits.topic_modeling import TopicModeling
+from typing import List, Tuple
 
 
 @pytest.fixture
@@ -182,8 +183,17 @@ class TestTopicModeling:
         tokenized_documents: pl.DataFrame = documents_to_process.with_columns(
             pl.col("text").apply(lambda x: topic_modeling.preprocessing_text(x)).alias('tokenized_text'))
         topic_modeling.train_model(tokenized_documents)
-        duckdb.execute(
-            "Select * from tokenized_documents where filename = '2014BenefitsGuide.pdf'")
-        # When
-
-        assert 1 == 1
+        document: str = duckdb.execute(
+            """
+                                Select listagg(element) 
+                                from (
+                                    Select unnest(tokenized_text) AS element 
+                                    from tokenized_documents 
+                                    where filename = 'pdf_test_no_ocr.pdf') 
+                                    subquery
+            """).fetchall()[0][0].split(',')
+        # when
+        topics_words = topic_modeling.get_list_of_topics_from_document(
+            document, pytest.models_directory)
+        # Then
+        assert len(topics_words) > 0

@@ -88,7 +88,7 @@ class TopicModeling:
     def get_dictionary_filename(self):
         return self.dictionary_filename
 
-    def get_list_of_topics_from_document(self, preprocessed_docs: List[str], path_pretrained_model: str) -> List[str]:
+    def get_list_of_topics_from_document(self, preprocessed_docs: List[str], path_pretrained_model: str, number_of_top_topics: int = 2) -> List[Dictionary[str, float]]:
 
         def load_pretrained_model(path_to_serialize: str, model_filename: str, dictionary_filename: str) -> Tuple[LdaModel, Dictionary]:
             pretrained_lda_model = LdaModel.load(
@@ -99,17 +99,17 @@ class TopicModeling:
 
         pretrained_lda_model, pretrained_dictionary = load_pretrained_model(
             self.path_to_serialize, self.lda_model_filename, self.dictionary_filename)
-        new_corpus = [pretrained_dictionary.doc2bow(
-            doc) for doc in preprocessed_docs]
-        # Classify the new documents using the pre-trained LDA model
-        for i, doc_bow in enumerate(new_corpus):
-            print(f"Document {i+1}:")
-            topic_distribution = pretrained_lda_model[doc_bow]
-            sorted_topics = sorted(
-                topic_distribution, key=lambda x: x[1], reverse=True)
+
+        bow = pretrained_dictionary.doc2bow(preprocessed_docs)
+        topics = pretrained_lda_model[bow]
+        sorted_topics = sorted(topics, key=lambda x: x[1], reverse=True)
         topics_words = []
         for topic_id, _ in sorted_topics:
-            topic_words = pretrained_lda_model.show_topic(topic_id)
-            for word, prob in topic_words:
-                topics_words.append(f"\t{word} (Probability: {prob:.3f})")
-        return topic_words
+            top_topics = pretrained_lda_model.show_topic(
+                topic_id, number_of_top_topics)
+            for word, prob in top_topics:
+                topics_words.append(
+                    {'Word': word, 'Probability': prob})
+            # for word, prob in topic_words:
+            #    topics_words.append(f"\t{word} (Probability: {prob:.3f})")
+        return topics_words
