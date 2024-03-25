@@ -1,5 +1,6 @@
 """This module provides a function to extract text from a PDF file"""
-import os, re
+import os
+import re
 import spacy
 from gensim import corpora
 from gensim.models.ldamodel import LdaModel
@@ -9,13 +10,13 @@ from array import array
 import fitz
 import polars as pl
 
+
 class ExtractTextFromPDFController:
-    
-    def __init__(self, spacy_model:str = "en_core_web_sm"):
+
+    def __init__(self, spacy_model: str = "en_core_web_sm"):
         self.nlp = spacy.load(spacy_model)
 
-    
-    def process_pdf_files(self,pdf_file_path:str) -> pl.DataFrame:
+    def process_pdf_files(self, pdf_file_path: str) -> pl.DataFrame:
         """
         Extract text from each page from a PDF file and retun as a list of strings.
         Parameters:
@@ -24,57 +25,32 @@ class ExtractTextFromPDFController:
         list: a list of strings where each position is a page from the pdf.
         """
         schema = [
-                    ("filename", pl.String),
-                    ("page_number", pl.Int64),
-                    ("text", pl.String)
-                 ]
-        df = pl.DataFrame({name: pl.Series([], dtype=dtype) for name, dtype in schema})
+            ("filename", pl.String),
+            ("page_number", pl.Int64),
+            ("text", pl.String)
+        ]
+        df = pl.DataFrame({name: pl.Series([], dtype=dtype)
+                          for name, dtype in schema})
 
         for file in os.listdir(pdf_file_path):
-            document =  fitz.open(os.path.join(pdf_file_path,file))
-            page_number : int = 0
+            document = fitz.open(os.path.join(pdf_file_path, file))
+            page_number: int = 0
             for page in document:
-                 page_number += 1
-                 row : Dictionary = {
-                                    "filename": file,
-                                    "page_number": page_number,
-                                    "text": page.get_text().replace("\n","  ")
-                                    }
-                 row_df = pl.DataFrame([row])
-                 df = pl.concat([df, row_df])
+                page_number += 1
+                row: Dictionary = {
+                    "filename": file,
+                    "page_number": page_number,
+                    "text": page.get_text().replace("\n", "  ")
+                }
+                row_df = pl.DataFrame([row])
+                df = pl.concat([df, row_df])
         return df
-                 
-            
-            
-    # def clean_text(text,self):
-    #     """
-    #     Clean text 
-    #     Parameters:
-    #     str: text extract from pdfs
-    #     Returns:
-    #     str: text without line breaks, hyphens, special characters, puctuations 
-    #     """
-    #     # Patterns
-    #     email_pattern = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
-    #     phone_pattern = r'(\d{3}[-.\s]??\d{3}[-.\s]??\d{4}|\(\d{3}\)\s*\d{3}[-.\s]??\d{4}|\d{3}[-.\s]??\d{4})'
-    #     url_pattern = r'\b(?:http[s]?://|www\.)[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|/))'
-        
-    #     # Removing Patterns
-    #     text = re.sub(email_pattern, '', text)
-    #     text = re.sub(phone_pattern, '', text)
-    #     text = re.sub(url_pattern, '', text)   
-    #     text = re.sub(r'-\n', '', text)
-    #     text = re.sub(r'\n', ' ', text)
-    #     text = re.sub(r'[^a-zA-Z0-9.\s]', '', text)
-    #     text = re.sub(r'\d+', '', text)
-    #     text = re.sub(r'\s+', ' ', text).strip()
-    #     return text
 
 
 # def write_pdf_pages_to_file(path: str,filename: str, pages: List[str]) -> str:
 #     """
 #     Write pdf pages to a file.
-    
+
 #     Parameters:
 #         path (str): path where the function will write the file
 #         filename (str): filename which the file will be write
@@ -90,7 +66,7 @@ class ExtractTextFromPDFController:
 
 # def read_text_pages_extracted_from_pdf(path: str, filename: str) -> List[str]:
 #     """
-#     Read pages from text file 
+#     Read pages from text file
 
 #     Args:
 #         path (str): _description_
@@ -123,19 +99,19 @@ class ExtractTextFromPDFController:
 #     # Lemmatize and remove stop words
 #     tokens:List[str] = []
 #     for token in doc:
-#         if token.is_alpha and not token.is_stop and len(token) > 3: 
+#         if token.is_alpha and not token.is_stop and len(token) > 3:
 #             tokens.append(token.lemma_)
 #     return tokens
 
-# def write_preprocessed_corpus_to_file( 
-#                                     path_all_documents: str,  
-#                                     path_corpus: str, 
+# def write_preprocessed_corpus_to_file(
+#                                     path_all_documents: str,
+#                                     path_corpus: str,
 #                                     filename: str,
 #                                     nlp: spacy.language
 #                                     ) -> str:
 #     """
 #     Write preprocessed corpus to a file.
-    
+
 #     Parameters:
 #         path_all_documents (str): path where we will write the all documents file
 #         path_corpus (str): path where we will write the corpus file
@@ -144,10 +120,10 @@ class ExtractTextFromPDFController:
 #     Returns:
 #         str: path and file name.
 #     """
-#     documents : List[str]= [] 
+#     documents : List[str]= []
 #     for file in read_files_from_directory(path_all_documents):
 #         pages_read_from_file: List[str] = read_text_pages_extracted_from_pdf(
-#                                                                     path_all_documents, 
+#                                                                     path_all_documents,
 #                                                                     file
 #                                                                            )
 #         preprocessed_pages = [preprocessing_text(page, nlp) for page in pages_read_from_file]
@@ -163,7 +139,7 @@ class ExtractTextFromPDFController:
 #         preprocessed_docs (List[str]): pages extracted from pdfs clennead and tokenized
 #         path_to_serialize (str): path for bag_of_words file
 #         num_topics (int): number of topics
-#         passes (int): lda algorithm 
+#         passes (int): lda algorithm
 #     """
 #     dictionary = corpora.Dictionary(preprocessed_docs)
 #     dictionary.filter_extremes(no_below=2, no_above=0.5)
@@ -171,7 +147,7 @@ class ExtractTextFromPDFController:
 #     lda_model = LdaModel(corpus=bow_corpus, id2word=dictionary, num_topics=num_topics, passes=10)
 #     lda_model.save(os.path.join(path_to_serialize,'pretrained_lda_model.model'))
 #     dictionary.save(os.path.join(path_to_serialize,'pretrained_dictionary.dict'))
-    
+
 # def load_pretrained_model(path_to_serialize : str) -> Tuple[LdaModel, Dictionary] :
 #     """_summary_
 
@@ -201,11 +177,3 @@ class ExtractTextFromPDFController:
 #             for word, prob in topic_words:
 #                 topics_words.append(f"\t{word} (Probability: {prob:.3f})")
 #     return  topic_words
-
-
-
-
-
-
-
-    
