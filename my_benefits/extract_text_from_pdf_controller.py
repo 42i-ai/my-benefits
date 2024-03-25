@@ -32,6 +32,24 @@ class ExtractTextFromPDFController:
         self.logger.debug(
             f"""Initializing extract text from pdf controller""")
 
+    def process_pdf_files_ocr(self, pdf_file_path: str) -> pl.DataFrame:
+        """
+        Extract text from ocr pfd  from a PDF file and retun as a list of strings.
+        Parameters:
+        fitz.Documents: the result of the processing of the library pymupdf.
+        Returns:
+        list: a list of strings where each position is a page from the pdf.
+        """
+        schema = [
+            ("filename", pl.String),
+            ("page_number", pl.Int64),
+            ("text", pl.String)
+        ]
+        df = pl.DataFrame({name: pl.Series([], dtype=dtype)
+                          for name, dtype in schema})
+
+        return df
+
     def process_pdf_files(self, pdf_file_path: str) -> pl.DataFrame:
         """
         Extract text from each page from a PDF file and retun as a list of strings.
