@@ -4,6 +4,7 @@ import re
 import shutil
 import pytest
 import polars as pl
+import duckdb
 from my_benefits.extract_text_from_pdf_controller import ExtractTextFromPDFController
 from my_benefits.document_model import DocumentsModel
 
@@ -20,12 +21,16 @@ def prepare_document_extract_text():
     if os.path.isdir("tests/silver"):
         shutil.rmtree("tests/silver")
     os.mkdir("tests/silver")
+    if os.path.isdir("tests/gold"):
+        shutil.rmtree("tests/gold")
+    os.mkdir("tests/gold")
     if os.path.isdir("tests/models"):
         shutil.rmtree("tests/models")
     os.mkdir("tests/models")
     pytest.landing_directory =  "tests/landing"
     pytest.raw_directory = "tests/raw"
     pytest.silver_directory = "tests/silver"
+    pytest.gold_directory = "tests/gold"
     pytest.models_directory = "tests/models"
 
 
@@ -48,13 +53,25 @@ class TestDocumentModel:
     def test_persist_dataframe_on_document_pages(self, prepare_document_extract_text):
         """This method aims to test the persist of a dataframe on document_pages table"""
         # Given
-        my_document_model = DocumentsModel()
+        my_document_model = DocumentsModel(
+                                            pytest.raw_directory,
+                                            pytest.silver_directory,
+                                            pytest.gold_directory
+                                          )
         extract: ExtractTextFromPDFController = ExtractTextFromPDFController()
         df: pl.DataFrame  = extract.process_pdf_files(pytest.landing_directory)
+        connection = duckdb.connect(my_document_model.get_raw_database_dir())
         # When
         my_document_model.add_document_page_raw(df)
         # Then
-        assert os.path.isfile(os.path.join(pytest.raw_directory,"2014BenefitsGuide.parquet")) is True
+        result: pl.DataFrame = connection.execute("""
+                                                  SELECT 
+                                                  count(*) 
+                                                  FROM 
+                                                  document_pages
+                                                  """
+                                                 ).pl()
+        assert result['count_star()'][0] == 66
         
     # def test_extract_text_from_pdf_with_pymupdf(self):
     #     """This method aims to text the pdf extraction"""
