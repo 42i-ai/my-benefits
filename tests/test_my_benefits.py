@@ -5,6 +5,7 @@ import shutil
 import pytest
 import polars as pl
 from my_benefits.extract_text_from_pdf_controller import ExtractTextFromPDFController
+from my_benefits.document_model import DocumentsModel
 
 @pytest.fixture
 def prepare_document_extract_text():
@@ -28,7 +29,7 @@ def prepare_document_extract_text():
     pytest.models_directory = "tests/models"
 
 
-class TestExtractTextFromPdf:
+class TestPDFExtraction:
     """Class Test the extract_text_from_pdf module"""
     
     def test_extract_text_from_pdf(self, prepare_document_extract_text):
@@ -39,6 +40,21 @@ class TestExtractTextFromPdf:
         df: pl.DataFrame  = extract.process_pdf_files(pytest.landing_directory)
         # Then
         assert df.select(pl.col("text"))[0].item() == 'Employee Benefits  2014  '
+
+
+
+class TestDocumentModel:
+    """Class Test the my_benefits_model module"""
+    def test_persist_dataframe_on_document_pages(self, prepare_document_extract_text):
+        """This method aims to test the persist of a dataframe on document_pages table"""
+        # Given
+        my_document_model = DocumentsModel()
+        extract: ExtractTextFromPDFController = ExtractTextFromPDFController()
+        df: pl.DataFrame  = extract.process_pdf_files(pytest.landing_directory)
+        # When
+        my_document_model.add_document_page_raw(df)
+        # Then
+        assert os.path.isfile(os.path.join(pytest.raw_directory,"2014BenefitsGuide.parquet")) is True
         
     # def test_extract_text_from_pdf_with_pymupdf(self):
     #     """This method aims to text the pdf extraction"""
