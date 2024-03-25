@@ -90,7 +90,7 @@ You can choose your preferred techniques or tools, extract the most text you can
 
 
 
-"`bash
+```bash
 streamlit run my_benefits/app.py
 ```
 
@@ -100,18 +100,17 @@ streamlit run my_benefits/app.py
 
 We use Poetry[2] to manage Python dependencies for the environment solution. The solution will be packaged in a docker-compose file, which can be used to deploy it to production and execute tests on the CD/CI process.
 
-"`bash
+```bash
 docker build -t nlp-challenge -f my_benefits/extract/Dockerfile --no-cache --progress=plain . 2>&1 | tee build.log
 ```
 
 The following command runs the container.
 
-"`bash
+```bash
 docker run -p 8501:8501 nlp-challenge
 ```
 
 ### References
-
 [^1]: [Build a stremlit image](https://docs.streamlit.io/knowledge-base/tutorials/deploy/docker)
 [^2]: [Poetry site](https://python-poetry.org/)
 [^3]: [Build a pipeline using duckdb](https://www.youtube.com/watch?v=eXXImkz-vMs)
