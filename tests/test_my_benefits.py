@@ -87,10 +87,11 @@ class TestDocumentModel:
             pytest.gold_directory
         )
         extract: ExtractTextFromPDFController = ExtractTextFromPDFController()
-        df: pl.DataFrame = extract.process_pdf_files(pytest.landing_directory)
+        extracted_documents: pl.DataFrame = extract.process_pdf_files(
+            pytest.landing_directory)
         connection = duckdb.connect(my_document_model.get_raw_database_dir())
         # When
-        my_document_model.add_document_page_raw(df)
+        my_document_model.add_document_page_raw(extracted_documents)
         # Then
         result: pl.DataFrame = connection.execute("""
                                                   SELECT 
@@ -101,6 +102,47 @@ class TestDocumentModel:
                                                   ).pl()
         assert result['count_star()'][0] == 66
 
+    def test_persist_dataframe_on_document_pages_silver(self, prepare_document_extract_text):
+        """This method aims to test the persist of a dataframe on document_pages table"""
+        # Given
+        topic_modeling: TopicModeling = TopicModeling()
+        my_document_model: DocumentsModel = DocumentsModel(
+            pytest.raw_directory,
+            pytest.silver_directory,
+            pytest.gold_directory
+        )
+        connection_raw = duckdb.connect(
+            my_document_model.get_raw_database_dir())
+        connection_silver = duckdb.connect(
+            my_document_model.get_silver_database_dir())
+        extract: ExtractTextFromPDFController = ExtractTextFromPDFController()
+        extract_documents: pl.DataFrame = extract.process_pdf_files(
+            pytest.landing_directory)
+        my_document_model.add_document_page_raw(extract_documents)
+        documents_pages: pl.DataFrame = connection_raw.execute("""
+                                                  SELECT 
+                                                  filename,
+                                                  page_number,    
+                                                  text
+                                                  FROM 
+                                                  document_pages
+                                                  """
+                                                               ).pl()
+        tokenized_documents = documents_pages.with_columns(
+            pl.col("text").apply(lambda x: topic_modeling.preprocessing_text(x)).alias('tokenized_text'))
+        # When
+        my_document_model.add_document_page_silver(tokenized_documents)
+        # Then
+        result: pl.DataFrame = connection_silver.execute("""
+                                                  SELECT 
+                                                  tokenized_text 
+                                                  FROM 
+                                                  document_pages
+                                                  """
+                                                         ).pl()
+        assert tokenized_documents.select(
+            pl.col("tokenized_text").list.get(0))[0].item() == 'employee'
+
 
 class TestTopicModeling:
     """Class Test the topic modeling  module"""
@@ -108,12 +150,12 @@ class TestTopicModeling:
     def test_preprocess_step(self, prepare_document_extract_text, prepare_topic_modeling):
         # Given
         documents_to_process: pl.DataFrame = pytest.documents
-        topic_modeling: TopicModeling = TopicModeling(documents_to_process)
+        topic_modeling: TopicModeling = TopicModeling()
         # When
-        documents_to_process = documents_to_process.with_columns(
+        tokenized_documents: pl.DataFrame = documents_to_process.with_columns(
             pl.col("text").apply(lambda x: topic_modeling.preprocessing_text(x)).alias('tokenized_text'))
         # Then
-        assert documents_to_process.select(
+        assert tokenized_documents.select(
             pl.col("tokenized_text").list.get(0))[0].item() == 'employee'
 
     # def test_build_pretrained_model(self):

@@ -10,10 +10,8 @@ class TopicModeling:
     """
 
     def __init__(self,
-                 data_to_process: pl.DataFrame,
                  language_model: str = "en_core_web_sm"
                  ):
-        self.data_to_process: pl.DataFrame = data_to_process
         self.nlp = spacy.load(language_model)
 
     def preprocessing_text(self, text: str) -> List[str]:
