@@ -45,34 +45,3 @@ class ExtractTextFromPDFController:
                 row_df = pl.DataFrame([row])
                 df = pl.concat([df, row_df])
         return df
-
-
-# def load_pretrained_model(path_to_serialize : str) -> Tuple[LdaModel, Dictionary] :
-#     """_summary_
-
-#     Args:
-#         path_to_serialize (str): _description_
-
-#     Returns:
-#         Tuple[LdaModel, Dictionary]: _description_
-#     """
-#     pretrained_lda_model = LdaModel.load(os.path.join(path_to_serialize,'pretrained_lda_model.model'))
-#     pretrained_dictionary = corpora.Dictionary.load(os.path.join(path_to_serialize,'pretrained_dictionary.dict'))
-#     return pretrained_lda_model, pretrained_dictionary
-
-# def get_list_of_topics_from_document(preprocessed_docs : List[str], path_pretrained_model : str)-> List[str]:
-#     """_summary_
-#     """
-#     pretrained_lda_model, pretrained_dictionary  = load_pretrained_model(path_pretrained_model)
-#     new_corpus = [pretrained_dictionary.doc2bow(doc) for doc in preprocessed_docs]
-#     # Classify the new documents using the pre-trained LDA model
-#     for i, doc_bow in enumerate(new_corpus):
-#         print(f"Document {i+1}:")
-#         topic_distribution = pretrained_lda_model[doc_bow]
-#         sorted_topics = sorted(topic_distribution, key=lambda x: x[1], reverse=True)
-#     topics_words = []
-#     for topic_id, _ in sorted_topics:
-#             topic_words = pretrained_lda_model.show_topic(topic_id)
-#             for word, prob in topic_words:
-#                 topics_words.append(f"\t{word} (Probability: {prob:.3f})")
-#     return  topic_words

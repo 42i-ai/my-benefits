@@ -48,9 +48,11 @@ def prepare_topic_modeling():
     )
     extract: ExtractTextFromPDFController = ExtractTextFromPDFController()
     df: pl.DataFrame = extract.process_pdf_files(pytest.landing_directory)
-    connection = duckdb.connect(my_document_model.get_raw_database_dir())
+    connection_raw = duckdb.connect(my_document_model.get_raw_database_dir())
+    connection_silver = duckdb.connect(
+        my_document_model.get_silver_database_dir())
     my_document_model.add_document_page_raw(df)
-    pytest.documents = connection.execute("""
+    pytest.document_extracted_from_pdf = connection_raw.execute("""
                                                   SELECT 
                                                   filename,
                                                   page_number,    
@@ -58,7 +60,7 @@ def prepare_topic_modeling():
                                                   FROM 
                                                   document_pages
                                                   """
-                                          ).pl()
+                                                                ).pl()
 
 
 class TestPDFExtraction:
@@ -149,7 +151,7 @@ class TestTopicModeling:
 
     def test_preprocess_step(self, prepare_document_extract_text, prepare_topic_modeling):
         # Given
-        documents_to_process: pl.DataFrame = pytest.documents
+        documents_to_process: pl.DataFrame = pytest.document_extracted_from_pdf
         topic_modeling: TopicModeling = TopicModeling(
             path_to_serialize=pytest.models_directory)
         # When
@@ -161,7 +163,7 @@ class TestTopicModeling:
 
     def test_train_model(self, prepare_document_extract_text, prepare_topic_modeling):
         # Given
-        documents_to_process: pl.DataFrame = pytest.documents
+        documents_to_process: pl.DataFrame = pytest.document_extracted_from_pdf
         topic_modeling: TopicModeling = TopicModeling(
             path_to_serialize=pytest.models_directory)
         tokenized_documents: pl.DataFrame = documents_to_process.with_columns(
@@ -172,24 +174,16 @@ class TestTopicModeling:
         assert os.path.isfile(os.path.join(
             pytest.models_directory, topic_modeling.get_lda_model_filename())) is True
 
-    # def test_build_pretrained_model(self):
-    #     # Given
-    #     doc: fitz.Document = open_pdf_file(os.path.join(pytest.landing_directory, pytest.file_topic_model))
-    #     list_of_pages: List[str] = extract_text_from_pdf_with_pymupdf(doc)
-    #     write_pdf_pages_to_file(pytest.raw_directory, pytest.file_topic_model, list_of_pages)
-    #     pages_read_from_file: List[str] = read_text_pages_extracted_from_pdf(pytest.raw_directory,pytest.file_topic_model.replace(".pdf",".txt"))
-    #     preprocessed_pages = [preprocessing_text(page, pytest.nlp) for page in pages_read_from_file]
-    #     #When
-    #     generate_pretrained_model(preprocessed_pages, pytest.models_directory)
-    #     #Then
-    #     pretrained_lda_model, pretrained_dictionary = load_pretrained_model(pytest.models_directory)
-    #     assert len(pretrained_dictionary) > 0
+    def test_get_list_of_topics(self, prepare_document_extract_text, prepare_topic_modeling):
+        # Given
+        documents_to_process: pl.DataFrame = pytest.document_extracted_from_pdf
+        topic_modeling: TopicModeling = TopicModeling(
+            path_to_serialize=pytest.models_directory)
+        tokenized_documents: pl.DataFrame = documents_to_process.with_columns(
+            pl.col("text").apply(lambda x: topic_modeling.preprocessing_text(x)).alias('tokenized_text'))
+        topic_modeling.train_model(tokenized_documents)
+        duckdb.execute(
+            "Select * from tokenized_documents where filename = '2014BenefitsGuide.pdf'")
+        # When
 
-    # def test_get_list_of_topics_from_document(self):
-    #     #Given
-    #     pages_read_from_file: List[str] = read_text_pages_extracted_from_pdf(pytest.raw_directory, pytest.file_topic_model.replace(".pdf",".txt"))
-    #     preprocessed_pages = [preprocessing_text(page, pytest.nlp) for page in pages_read_from_file]
-    #     #when
-    #     topics_words:List[str] = get_list_of_topics_from_document(preprocessed_pages,pytest.models_directory)
-    #     #Then
-    #     assert len(topics_words) > 0
+        assert 1 == 1
