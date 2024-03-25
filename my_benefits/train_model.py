@@ -9,15 +9,15 @@ import spacy
 import fitz
 import pandas as pd
 from typing import List
-from extract_text_from_pdf import extract_text_from_pdf_with_pymupdf
-from extract_text_from_pdf import read_files_from_directory 
-from extract_text_from_pdf import write_pdf_pages_to_file
-from extract_text_from_pdf import preprocessing_text
-from extract_text_from_pdf import open_pdf_file
-from extract_text_from_pdf import read_text_pages_extracted_from_pdf
-from extract_text_from_pdf import generate_pretrained_model
-from extract_text_from_pdf import get_list_of_topics_from_document
-from extract_text_from_pdf import write_preprocessed_corpus_to_file
+from my_benefits.extract_text_from_pdf_controller import extract_text_from_pdf_with_pymupdf
+from my_benefits.extract_text_from_pdf_controller import read_files_from_directory 
+from my_benefits.extract_text_from_pdf_controller import write_pdf_pages_to_file
+from my_benefits.extract_text_from_pdf_controller import preprocessing_text
+from my_benefits.extract_text_from_pdf_controller import open_pdf_file
+from my_benefits.extract_text_from_pdf_controller import read_text_pages_extracted_from_pdf
+from my_benefits.extract_text_from_pdf_controller import generate_pretrained_model
+from my_benefits.extract_text_from_pdf_controller import get_list_of_topics_from_document
+from my_benefits.extract_text_from_pdf_controller import write_preprocessed_corpus_to_file
 
 #TODO: Probabily this all file will become a kind of storage class to persist the data
 PDF_NO_OCR_PATH = "./my_benefits/data/pdf-no-ocr-data"

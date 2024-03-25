@@ -19,6 +19,7 @@ python-dotenv = "^1.0.1"
 seaborn = "^0.13.2"
 streamlit-option-menu = "^0.3.12"
 wordcloud = "^1.9.3"
+polars = "^0.20.16"
 
 
 [tool.poetry.group.dev.dependencies]
