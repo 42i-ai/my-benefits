@@ -3,11 +3,10 @@
 This solution aims to solve the problem of data extraction from PDF files. We tested it using data extracted from readable PDF and OCR pfd. After extracting the data, we used Streamlit for data visualization. All the solutions employ containers as a way to deploy on production.
 
 - [ ] Create a dashboard app to preset topic modeling (think of a better way to store data)
-- [ ] Extract data from OCR pdf (This task is working. We can solve the dashboard for OCR in the same way as previous step)
-- [ ] Add Duckdb to the extraction pipeline
+- [ ] Extract data from OCR pdf (This task is working. We can solve the dashboard for OCR in the same way as the previous step)
+- [x] Add Duckdb to the extraction pipeline
 - [ ] To container app
-- [ ] Draw an architecture to the solution
-- [ ] Add a git workflow to run test when asking for mergin
+- [ ] Draw an architecture for the solution
 
 > [!TIP]
 > If you have Markdown Preview Enhanced on Vs code, you can preview by (shift + command + v)
@@ -17,7 +16,7 @@ This solution aims to solve the problem of data extraction from PDF files. We te
 > Also the extensions: vscode-icons, Python Debugger, Python, Pylint, Pylance, Markdown Preview Enhanced, Docker, TODO Tree.
 > Happy code!!! And have a nice cup of coffee.
 
-This test aims to understand your way of thinking, coding, and problem-solving skills. There is no correct answer; just follow your instincts and share with us the solutions to the challenges below:
+This test aims to understand your way of thinking, coding, and problem-solving skills. There is no correct answer; follow your instincts and share with us the solutions to the challenges below:
 
 > [!CAUTION]
 > Do not feed any of these files into generative AI providers (ChatGPT, Bard, etc) or use any output from these models to solve this challenge
@@ -26,7 +25,7 @@ This test aims to understand your way of thinking, coding, and problem-solving s
 
 Automated fundamental data extraction is beneficial for large organizations that deal with data on a large scale to generate meaningful information.
 
-The first challenge is: to extract information from all the PDF files found at /data/1
+The first challenge is to extract information from all the PDF files found at /data/1
 You can choose your preferred techniques or tools, but be aware that the data you've extracted may be necessary for the next challenge!
 
 # Solution for data extract:
@@ -41,67 +40,65 @@ To tackle the challenge of data extraction, we will employ four storage layers:
 > [!NOTE]
 > To run the code we should put the pdf files on the data folder inside my_benedits app folder.
 > In our case we have the files on a bucket on s3 to got the files.
-> To use this approach rename the example.env to env and replace the variables.
-> So just run the python script [^13] as follows:
+> To use this approach, rename the example.env to env and replace the variables.
+> So just run the Python script [^13] as follows:
 
-```bash
+"`bash
 python my_benefits/get_files.py
 ```
 
 We will approach the problem of information extraction in these stages:
 
-Step 1 - Extract textual information from PDF and store it inside the raw directory in a folder named after the PDF file name. The file will be named pfd-file-name-text-extracted.txt.
-Step 2- Extract tables from the PDF and store them in the same folder as the previous step.
-Step 3 - Pre-process the extracted text for lemmatization, stop word removal, and store it in the raw folder.
+**Step 1 - Extract PFD**
+
+ Extract textual information from the PDF stored on **landing** directory. We will process the pdf using PyMuPDF[10] and store the data extracted on the raw directory,  raw database **raw** on the table **document_pages** using duckdb[^7]. To extract information from PDF for further analysis, we will use PyMuPDF[10]. According to the article on Medium [9], the Python package PyMuPDF is a good choice because it preserves tables and the original PDF structure.DuckDB aims to create a fast and efficient SQL query execution engine to run complex queries on large data sets. It integrates tightly with Pandas DataFrames and allows us to run these queries directly on top of them without needing to move data in and out of the dataframe[^7][^18].
+
+**Step 2 - Pre-Processing**
+
+Pre-process the extracted text for lemmatization, stop word removal and store it in the silver directory. We will employ Polars data frame to manipulate the extracted data to improve performance. Polars stands out as a high-performance alternative to Pandas, especially for large datasets, thanks to its foundation in Rust and its integration with Apache Arrow, which ensure speedy operations and efficient memory usage. The language-independent Arrow format reduces computational overhead by minimizing serialization/deserialization processes, further enhancing performance. Additionally, Polars' ability to utilize multi-core processing for complex queries significantly outpaces Pandas, which primarily operates on a single core. While Polars excels in data manipulation and performance, Pandas still maintains an edge in data exploration and integration with machine learning pipelines due to its extensive compatibility with Python's data ecosystem.​[^19]. For the lemmatization process, we will use SpaCy[^20] stands out in the NLP library landscape for its efficiency, speed, and object-oriented approach, making it a favored choice for developers and application builders over NLTK, which is often seen as more suitable for educational and research purposes. 
+
+**Step 2 - Topic-Modeling**
+
+We will employ topic modeling to solve this challenge, which is a statistical model used in the discovery of abstract topics that occur in a collection of documents, in this solution. Topics modeling can be fully unsupervised, although semi-supervised and supervised variants exist. Among the most commonly used techniques is latent Dirichlet Allocation (LDA)[^14][^15][^16].
+
+Step 1: Load and Pre-process Data
+Step 2: Cluster Data to Identify Groups
+Step 3: Topic Modeling Generated Labels
 
 > [!NOTE]
 > In the production scenario for this solution, we can have two scenarios: Process the files soon,
 > arrive at the landing folder, or schedule batch processing. We can use Airflow[^12] to schedule a job or a
 > lambda function[^11] to trigger when a file arrives in the folder. Considering those scenarios, we created a container to test possible solutions using Kubernetes.
 
+
 2 - Data Visualization
 
-The second challenge is: display meaningful information from the extracted data (challenge 1)
-You can choose your preferred techniques or tools, be aware that sometimes less is more, present meaningful insights, and show us what you have found interesting on those files! (i.e: topic modeling, word distributions, etc)
+The second challenge is to display meaningful information from the extracted data (challenge 1)
+You can choose your preferred techniques or tools, be aware that sometimes less is more, present meaningful insights, and show us what you have found interesting in those files! (i.e., topic modeling, word distributions, etc)
 
-# Solution for data extract:
+# Solution for visualization:
 
-We will employ topic modeling to solve this challenge, which is a statistical model used in the discovery of abstract topics that occur in a collection of documents, in this solution. Topics modeling can be fully unsupervised, although semi-supervised and supervised variants exist. Among the most commonly used techniques is latent Dirichlet Allocation (LDA).
 
-Step 1: Load and Pre-process Data
-Step 2: Cluster Data to Identify Groups
-Step 3: AI Generated Labels
 
-As tool for delivery the dashboard we will use Streamlit[^17].
+As a tool for visualization, we will use Streamlit[^17]. Streamlit is a powerful open-source Python library designed to effortlessly transform machine learning and data science projects into interactive web apps, ideal for sharing complex insights with non-technical audiences. Its standout feature is the rapid development cycle, allowing scripts to become fully functional web applications in mere hours, enhancing communication with decision-makers. Streamlit's pure Python approach obviates the need for web development expertise, streamlining the workflow for data scientists. Despite its simplicity, Streamlit efficiently handles user interactions through an immediate mode UI and smart caching, ensuring a smooth and responsive user experience. This blend of ease of use, quick development, and no requirement for additional web technology skills makes Streamlit a highly accessible tool for sharing data-driven insights. To run the Stremlit app from the project folder, exectue the following code:
+
+"`bash
+streamlit run my_benefits/app.py
+```
 
 # Architecture
 
 # Enviroment:
 
-For the environment solution, we use Poetry[2] to manage Python dependencies. The solution will be packaged in a docker compose file, which can be used to deploy it to production and execute tests on the CD/CI process.
+We use Poetry[2] to manage Python dependencies for the environment solution. The solution will be packaged in a docker-compose file, which can be used to deploy it to production and execute tests on the CD/CI process.
 
-## Libraries used on this project:
-
-### PDFtoText
-
-To extract information from PDF for further analysis, we will use PDFtoText. According to the article on Medium [9], the Python package PyMuPDF[10] is a good choice because it preserves tables and the original PDF structure. However, after testing with PyMuPDF, the library does not extract tables correctly, so I used tabular.
-
-### Duckdb
-
-DuckDB aims to create a fast and efficient SQL query execution engine that can run complex queries on large data sets. It integrates tightly with Pandas DataFrames and allows us to run these queries directly on top of them without needing to move data in and out of the dataframe[7].
-
-- Mypds
-- streamlit[^1]
-
-I will use pypdf2 to extract text from the PDF and write the data as json.
-
-```bash
+"`bash
 docker build -t nlp-challenge -f my_benefits/extract/Dockerfile --no-cache --progress=plain . 2>&1 | tee build.log
 ```
 
-The following command runs the container
+The following command runs the container.
 
-```bash
+"`bash
 docker run -p 8501:8501 nlp-challenge
 ```
 
@@ -124,3 +121,7 @@ docker run -p 8501:8501 nlp-challenge
 [^15]: [Topic Modeling and Semantic Clustering with spaCy](https://fouadroumieh.medium.com/topic-modeling-and-semantic-clustering-with-spacy-960dd4ac3c9a)
 [^16]: [Transforming Data Science: Building a Topic Modelling App with Cohere and Databutton](https://medium.com/databutton/transforming-data-science-building-a-topic-modeling-app-with-cohere-and-databutton-aab5d37e94fa)
 [^17]: [Stremlit](https://docs.streamlit.io/)
+[^18]: [Birds versus Bear: Comparing DuckDB and Polars ](https://www.linkedin.com/pulse/bird-versus-bear-comparing-duckdb-polars-jorrit-sandbrink-xdfoe/)
+[^19]: [Polars vs. pandas: What's the Difference?](https://blog.jetbrains.com/dataspell/2023/08/polars-vs-pandas-what-s-the-difference/)
+[^20]: [Spacy](https://spacy.io/)
+

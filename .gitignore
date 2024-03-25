@@ -12,9 +12,11 @@ tests/raw/*
 tests/silver/*
 tests/models/*
 my_benefits/data/*
+my_benefits/models/*
 my_benefits/landing/*
 my_benefits/raw/*
 my_benefits/silver/*
+my_benefits/gold/*
 my_benefits/logs/*
 
 
