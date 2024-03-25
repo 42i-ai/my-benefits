@@ -47,22 +47,6 @@ class ExtractTextFromPDFController:
         return df
 
 
-# def generate_pretrained_model(preprocessed_docs : List[str], path_to_serialize : str, num_topics : int = 20, passes : int = 10):
-#     """
-#     Create a bag of words (BoW) and serialize it representation for each document using Gensim.
-#     Args:
-#         preprocessed_docs (List[str]): pages extracted from pdfs clennead and tokenized
-#         path_to_serialize (str): path for bag_of_words file
-#         num_topics (int): number of topics
-#         passes (int): lda algorithm
-#     """
-#     dictionary = corpora.Dictionary(preprocessed_docs)
-#     dictionary.filter_extremes(no_below=2, no_above=0.5)
-#     bow_corpus = [dictionary.doc2bow(doc, allow_update=True) for doc in preprocessed_docs]
-#     lda_model = LdaModel(corpus=bow_corpus, id2word=dictionary, num_topics=num_topics, passes=10)
-#     lda_model.save(os.path.join(path_to_serialize,'pretrained_lda_model.model'))
-#     dictionary.save(os.path.join(path_to_serialize,'pretrained_dictionary.dict'))
-
 # def load_pretrained_model(path_to_serialize : str) -> Tuple[LdaModel, Dictionary] :
 #     """_summary_
 

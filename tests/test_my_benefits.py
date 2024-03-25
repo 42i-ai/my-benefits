@@ -150,13 +150,27 @@ class TestTopicModeling:
     def test_preprocess_step(self, prepare_document_extract_text, prepare_topic_modeling):
         # Given
         documents_to_process: pl.DataFrame = pytest.documents
-        topic_modeling: TopicModeling = TopicModeling()
+        topic_modeling: TopicModeling = TopicModeling(
+            path_to_serialize=pytest.models_directory)
         # When
         tokenized_documents: pl.DataFrame = documents_to_process.with_columns(
             pl.col("text").apply(lambda x: topic_modeling.preprocessing_text(x)).alias('tokenized_text'))
         # Then
         assert tokenized_documents.select(
             pl.col("tokenized_text").list.get(0))[0].item() == 'employee'
+
+    def test_train_model(self, prepare_document_extract_text, prepare_topic_modeling):
+        # Given
+        documents_to_process: pl.DataFrame = pytest.documents
+        topic_modeling: TopicModeling = TopicModeling(
+            path_to_serialize=pytest.models_directory)
+        tokenized_documents: pl.DataFrame = documents_to_process.with_columns(
+            pl.col("text").apply(lambda x: topic_modeling.preprocessing_text(x)).alias('tokenized_text'))
+        # When
+        topic_modeling.train_model(tokenized_documents)
+        # Then
+        assert os.path.isfile(os.path.join(
+            pytest.models_directory, topic_modeling.get_lda_model_filename())) is True
 
     # def test_build_pretrained_model(self):
     #     # Given
