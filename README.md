@@ -2,7 +2,7 @@
 
 This solution aims to solve the problem of data extraction from PDF files. We tested it using data extracted from readable PDF and OCR pfd. After extracting the data, we used Streamlit for data visualization. All the solutions employ containers as a way to deploy on production.
 
-- [ ] Create a dashboard app to preset topic modeling (think of a better way to store data)
+- [x] Create a dashboard app to preset topic modeling (think of a better way to store data)
 - [ ] Extract data from OCR pdf (This task is working. We can solve the dashboard for OCR in the same way as the previous step)
 - [x] Add Duckdb to the extraction pipeline
 - [ ] To container app
@@ -21,14 +21,14 @@ This test aims to understand your way of thinking, coding, and problem-solving s
 > [!CAUTION]
 > Do not feed any of these files into generative AI providers (ChatGPT, Bard, etc) or use any output from these models to solve this challenge
 
-1. Data Extraction
+# 1. Data Extraction
 
 Automated fundamental data extraction is beneficial for large organizations that deal with data on a large scale to generate meaningful information.
 
 The first challenge is to extract information from all the PDF files found at /data/1
 You can choose your preferred techniques or tools, but be aware that the data you've extracted may be necessary for the next challenge!
 
-# Solution for data extract:
+## Solution for data extract:
 
 To tackle the challenge of data extraction, we will employ four storage layers:
 
@@ -71,16 +71,24 @@ Step 3: Topic Modeling Generated Labels
 > lambda function[^11] to trigger when a file arrives in the folder. Considering those scenarios, we created a container to test possible solutions using Kubernetes.
 
 
-2 - Data Visualization
+# 2 - Data Visualization
 
 The second challenge is to display meaningful information from the extracted data (challenge 1)
 You can choose your preferred techniques or tools, be aware that sometimes less is more, present meaningful insights, and show us what you have found interesting in those files! (i.e., topic modeling, word distributions, etc)
 
-# Solution for visualization:
+## Solution for visualization:
 
 
 
 As a tool for visualization, we will use Streamlit[^17]. Streamlit is a powerful open-source Python library designed to effortlessly transform machine learning and data science projects into interactive web apps, ideal for sharing complex insights with non-technical audiences. Its standout feature is the rapid development cycle, allowing scripts to become fully functional web applications in mere hours, enhancing communication with decision-makers. Streamlit's pure Python approach obviates the need for web development expertise, streamlining the workflow for data scientists. Despite its simplicity, Streamlit efficiently handles user interactions through an immediate mode UI and smart caching, ensuring a smooth and responsive user experience. This blend of ease of use, quick development, and no requirement for additional web technology skills makes Streamlit a highly accessible tool for sharing data-driven insights. To run the Stremlit app from the project folder, exectue the following code:
+
+
+# 3 - Data Extraction OCR
+
+The Third, as last challenge, is: extract, process, and infer text images, using the 2 PDF files available at data/2
+You can choose your preferred techniques or tools, extract the most text you can and apply one of the analysis techniques you'd applied on challenge 2.
+
+
 
 "`bash
 streamlit run my_benefits/app.py
