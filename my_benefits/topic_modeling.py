@@ -6,6 +6,8 @@ from typing import List, Tuple
 from gensim.models.ldamodel import LdaModel
 from gensim.corpora.dictionary import Dictionary
 from gensim import corpora
+from datetime import datetime
+import logging
 
 
 class TopicModeling:
@@ -15,9 +17,27 @@ class TopicModeling:
 
     def __init__(self,
                  language_model: str = "en_core_web_sm",
-                 path_to_serialize: str = "../my_benefits/models",
+                 path_to_serialize: str = "./my_benefits/models",
 
                  ):
+
+        now = datetime.now()
+        formatted_date_time = now.strftime("%d-%m-%Y-%H-%M-%S")
+        self.logger = logging.getLogger('debug_logger')
+        self.logger.setLevel(logging.DEBUG)
+        self.file_handler = logging.FileHandler(
+            f'./my_benefits/logs/topic-modeling-{formatted_date_time}.log')
+        self.file_handler.setLevel(logging.DEBUG)
+        self.formatter = logging.Formatter(
+            '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        self.file_handler.setFormatter(self.formatter)
+        self.logger.addHandler(self.file_handler)
+
+        now = datetime.now()
+        formatted_date_time = now.strftime("%d-%m-%Y-%H-%M-%S")
+        self.logger.debug(
+            f"""Initializing Topic Modeling - {formatted_date_time}""")
+
         self.nlp = spacy.load(language_model)
         self.path_to_serialize = path_to_serialize
         self.lda_model_filename = 'pretrained_lda_model.model'
@@ -51,6 +71,8 @@ class TopicModeling:
         doc = doc.lower()
         doc = self.nlp(doc)
         # Lemmatize and remove stop words
+        self.logger.debug(
+            f"""Tokening document""")
         tokens: List[str] = []
         for token in doc:
             if token.is_alpha and not token.is_stop and len(token) > 3:
@@ -67,6 +89,9 @@ class TopicModeling:
             num_topics (int): number of topics
             passes (int): lda algorithm
         """
+
+        self.logger.debug(
+            f"""Training Model""")
         documents_to_process = preprocessed_docs['tokenized_text'].to_list()
         dictionary = corpora.Dictionary(documents_to_process)
         dictionary.filter_extremes(no_below=2, no_above=0.5)
@@ -76,8 +101,12 @@ class TopicModeling:
                              num_topics=number_of_topics, passes=passes)
         lda_model.save(os.path.join(
             self.path_to_serialize, self.lda_model_filename))
+        self.logger.debug(
+            f"""Writing lda model to file - {self.lda_model_filename}""")
         dictionary.save(os.path.join(
             self.path_to_serialize, self.dictionary_filename))
+        self.logger.debug(
+            f"""Writing dictionary to file - {self.dictionary_filename}""")
 
     def get_path_to_serialize(self):
         return self.path_to_serialize

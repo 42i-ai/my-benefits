@@ -9,12 +9,28 @@ from typing import List, Tuple
 from array import array
 import fitz
 import polars as pl
+from datetime import datetime
+import logging
 
 
 class ExtractTextFromPDFController:
 
     def __init__(self, spacy_model: str = "en_core_web_sm"):
         self.nlp = spacy.load(spacy_model)
+        now = datetime.now()
+        formatted_date_time = now.strftime("%d-%m-%Y-%H-%M-%S")
+        self.logger = logging.getLogger('debug_logger')
+        self.logger.setLevel(logging.DEBUG)
+        self.file_handler = logging.FileHandler(
+            f'./my_benefits/logs/extract-pdf-{formatted_date_time}.log')
+
+        self.file_handler.setLevel(logging.DEBUG)
+        self.formatter = logging.Formatter(
+            '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        self.file_handler.setFormatter(self.formatter)
+        self.logger.addHandler(self.file_handler)
+        self.logger.debug(
+            f"""Initializing extract text from pdf controller""")
 
     def process_pdf_files(self, pdf_file_path: str) -> pl.DataFrame:
         """
@@ -34,6 +50,8 @@ class ExtractTextFromPDFController:
 
         for file in os.listdir(pdf_file_path):
             document = fitz.open(os.path.join(pdf_file_path, file))
+            self.logger.debug(
+                f"""Processing document - file documents - {file}""")
             page_number: int = 0
             for page in document:
                 page_number += 1
@@ -44,4 +62,6 @@ class ExtractTextFromPDFController:
                 }
                 row_df = pl.DataFrame([row])
                 df = pl.concat([df, row_df])
+            self.logger.debug(
+                f"""Pages loaded from documents - {len(df)}""")
         return df
