@@ -159,10 +159,14 @@ with preprocessing_options:
 visualization_options = st.sidebar.form('visualization-options')
 
 with visualization_options:
-    st.header('Visualize data')
-    select_event = st.selectbox('Choisir des indicateurs', li)
+    st.header('Visualize data from no ocr pdf files')
+    select_event = st.selectbox('Select Files no ocr', li)
     submitted_visualize_data = st.form_submit_button("Visualize Data")
 
+with visualization_options:
+    st.header('Visualize data from  ocr pdf files')
+    select_event = st.selectbox('Select Files ocr', li)
+    submitted_visualize_data = st.form_submit_button("Visualize Data")
 
 if submitted_extract_data:
     extract_information_from_the_pdf_files()

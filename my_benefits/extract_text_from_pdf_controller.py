@@ -62,6 +62,7 @@ class ExtractTextFromPDFController:
             ("filename", pl.String),
             ("page_number", pl.Int64),
             ("text", pl.String)
+            ("is_ocr", pl.Boolean)
         ]
         df = pl.DataFrame({name: pl.Series([], dtype=dtype)
                           for name, dtype in schema})
@@ -76,7 +77,8 @@ class ExtractTextFromPDFController:
                 row: Dictionary = {
                     "filename": file,
                     "page_number": page_number,
-                    "text": page.get_text().replace("\n", "  ")
+                    "text": page.get_text().replace("\n", "  "),
+                    "is_ocr": False
                 }
                 row_df = pl.DataFrame([row])
                 df = pl.concat([df, row_df])
