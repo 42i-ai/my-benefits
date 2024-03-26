@@ -102,13 +102,14 @@ def extract_information_from_the_pdf_files():
         documents: pl.DataFrame = extract_data_from_documents.process_pdf_files(
             PDF_NO_OCR_PATH)
         document_model.add_document_page_raw(documents)
+    with st.spinner('Extracting text from documents no ocr ...'):
+        documents_ocr: pl.DataFrame = extract_data_from_documents.process_pdf_files_ocr(
+            PDF_OCR_PATH, IMAGE_CONVERSION_PATH)
+        document_model.add_document_page_raw(documents_ocr)
     with st.spinner('Preprocessing document ...'):
         preprocessed_documents: pl.DataFrame = preprocessing_text()
     with st.spinner('Training model  ...'):
         topic_modeling.train_model(preprocessed_documents)
-    with st.spinner('Extracting text from documents no ocr ...'):
-        documents: pl.DataFrame = extract_data_from_documents.process_pdf_files_ocr(
-            PDF_NO_OCR_PATH, IMAGE_CONVERSION_PATH)
 
 
 def generate_wordcloud(selected_event: str = None, is_ocr: bool = False):
