@@ -1,12 +1,19 @@
 # NLP and Data Extraction Challenge
 
-This solution aims to solve the problem of data extraction from PDF files. We tested it using data extracted from readable PDF and OCR pfd. After extracting the data, we used Streamlit for data visualization. All the solutions employ containers as a way to deploy on production.
+This solution aims to solve the problem of data extraction from PDF files. We tested it using data extracted from readable PDF and OCR pfd. After extracting the data, we used Streamlit for data visualization. All the solutions employ containers as a way to deploy on production. To run the application locally you need to run the following command:
+
+```bash
+streamlit run my_benefits/app.py
+```
 
 - [x] Create a dashboard app to preset topic modeling (think of a better way to store data)
 - [ ] Extract data from OCR pdf (This task is working. We can solve the dashboard for OCR in the same way as the previous step)
 - [x] Add Duckdb to the extraction pipeline
-- [ ] To container app
+- [ ] complete the containerizing the application
 - [ ] Draw an architecture for the solution
+- [ ] To architect how to add MLFlow to this solution to improve the PDF model extraction.
+
+This solution can be used as a base to build a cost data lake with machine learning capabilities.
 
 > [!TIP]
 > If you have Markdown Preview Enhanced on Vs code, you can preview by (shift + command + v)
@@ -88,11 +95,20 @@ As a tool for visualization, we will use Streamlit[^17]. Streamlit is a powerful
 The Third, as last challenge, is: extract, process, and infer text images, using the 2 PDF files available at data/2
 You can choose your preferred techniques or tools, extract the most text you can and apply one of the analysis techniques you'd applied on challenge 2.
 
+## Solution for OCR extraction
 
+pdf2image is a Python library used for converting PDF files into images, making it easier to work with the visual content of PDF documents in Python applications. It relies on **Poppler**, a PDF rendering library, to execute the conversion. Poppler must be installed on your system for pdf2image to function, as it's not a Python package but rather a separate utility that **pdf2image** calls behind the scenes. This setup is commonly used in projects where PDF content needs to be displayed or processed as images. For installation and usage, refer to the respective documentation of each tool. Also we to use the **Tesseract-ocr** an optical character recognition (OCR) tool the library the python package Python-tesseract is a wrapper for google library.
+
+> [!CAUTION]
+> The ocr solution depends of Poppler [^21] and  Tesseract-ocr[^22]. To install on the mac os both use:
 
 ```bash
-streamlit run my_benefits/app.py
+brew install poppler
 ```
+```bash
+brew install tesseract
+```
+We will containerizing an application with dependencies like pdf2image, Poppler, and Tesseract-OCR . For to encapsulate the environment, ensuring that all the necessary tools are available on the specific version. This approach facilitates easier deployment across different systems without compatibility issues.
 
 # Architecture
 
@@ -131,4 +147,6 @@ docker run -p 8501:8501 nlp-challenge
 [^18]: [Birds versus Bear: Comparing DuckDB and Polars ](https://www.linkedin.com/pulse/bird-versus-bear-comparing-duckdb-polars-jorrit-sandbrink-xdfoe/)
 [^19]: [Polars vs. pandas: What's the Difference?](https://blog.jetbrains.com/dataspell/2023/08/polars-vs-pandas-what-s-the-difference/)
 [^20]: [Spacy](https://spacy.io/)
+[^21]: [Poppler](https://poppler.freedesktop.org/)
+[^22]: [Tesseract](https://tesseract-ocr.github.io/)
 

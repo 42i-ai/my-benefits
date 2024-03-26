@@ -17,6 +17,7 @@ def prepare_document_extract_text():
     if not os.path.isdir("tests/landing"):
         os.mkdir("tests/landing")
         os.mkdir("tests/landing/pdf-no-ocr-data")
+        os.mkdir("tests/landing/image_conversion")
         os.mkdir("tests/landing/pdf-ocr-data")
         shutil.copyfile("./my_benefits/data/pdf-no-ocr-data/2014BenefitsGuide.pdf",
                         "tests/landing/pdf-no-ocr-data/pdf_test_no_ocr.pdf")
@@ -38,11 +39,12 @@ def prepare_document_extract_text():
         shutil.rmtree("tests/models")
     os.mkdir("tests/models")
     pytest.landing_directory_no_ocr_data = "tests/landing/pdf-no-ocr-data"
-    pytest.landing_directory_ocr_data = "tests/landing/pdf-no-ocr-data"
+    pytest.landing_directory_ocr_data = "tests/landing/pdf-ocr-data"
     pytest.raw_directory = "tests/raw"
     pytest.silver_directory = "tests/silver"
     pytest.gold_directory = "tests/gold"
     pytest.models_directory = "tests/models"
+    pytest.image_conversion = "tests/landing/image_conversion"
 
 
 @pytest.fixture
@@ -91,10 +93,9 @@ class TestPDFExtraction:
         extract: ExtractTextFromPDFController = ExtractTextFromPDFController()
         # When
         df: pl.DataFrame = extract.process_pdf_files_ocr(
-            pytest.landing_directory_no_ocr_data)
+            pytest.landing_directory_ocr_data, pytest.image_conversion)
         # Then
-        assert df.select(pl.col("text"))[
-            0].item() == 'Employee Benefits  2014  '
+        assert len(df) == 2
 
 
 class TestDocumentModel:

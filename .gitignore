@@ -7,7 +7,7 @@ __pycache__/
 *.so
 
 # PDF Files
-tests/landing/*
+tests/landing/image_conversion/*
 tests/raw/*
 tests/silver/*
 tests/models/*
