@@ -12,6 +12,7 @@ tests/landing/pdf-no-ocr-data/*
 tests/landing/pdf-ocr-data/*
 tests/raw/*
 tests/silver/*
+tests/gold/*
 tests/models/*
 my_benefits/data/*
 my_benefits/models/*
