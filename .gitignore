@@ -8,6 +8,8 @@ __pycache__/
 
 # PDF Files
 tests/landing/image_conversion/*
+tests/landing/pdf-no-ocr-data/*
+tests/landing/pdf-ocr-data/*
 tests/raw/*
 tests/silver/*
 tests/models/*
