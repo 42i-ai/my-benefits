@@ -16,10 +16,16 @@ def prepare_document_extract_text():
     """Prepare test enviroment to extract text"""
     if not os.path.isdir("tests/landing"):
         os.mkdir("tests/landing")
+        os.mkdir("tests/landing/pdf-no-ocr-data")
+        os.mkdir("tests/landing/image_conversion")
+        os.mkdir("tests/landing/pdf-ocr-data")
         shutil.copyfile("./my_benefits/data/pdf-no-ocr-data/2014BenefitsGuide.pdf",
-                        "tests/landing/pdf_test_no_ocr.pdf")
+                        "tests/landing/pdf-no-ocr-data/pdf_test_no_ocr.pdf")
         shutil.copyfile("./my_benefits/data/pdf-no-ocr-data/Benefits Handbook.pdf",
-                        "tests/landing/pdf_for_topic_modeling.pdf")
+                        "tests/landing/pdf-no-ocr-data/pdf_for_topic_modeling.pdf")
+        shutil.copyfile("./my_benefits/data/pdf-ocr-data/employee_benefits_3.pdf",
+                        "tests/landing/pdf-ocr-data/employee_benefits_3.pdf")
+
     if os.path.isdir("tests/raw"):
         shutil.rmtree("tests/raw")
     os.mkdir("tests/raw")
@@ -32,11 +38,13 @@ def prepare_document_extract_text():
     if os.path.isdir("tests/models"):
         shutil.rmtree("tests/models")
     os.mkdir("tests/models")
-    pytest.landing_directory = "tests/landing"
+    pytest.landing_directory_no_ocr_data = "tests/landing/pdf-no-ocr-data"
+    pytest.landing_directory_ocr_data = "tests/landing/pdf-ocr-data"
     pytest.raw_directory = "tests/raw"
     pytest.silver_directory = "tests/silver"
     pytest.gold_directory = "tests/gold"
     pytest.models_directory = "tests/models"
+    pytest.image_conversion = "tests/landing/image_conversion"
 
 
 @pytest.fixture
@@ -48,7 +56,8 @@ def prepare_topic_modeling():
         pytest.gold_directory
     )
     extract: ExtractTextFromPDFController = ExtractTextFromPDFController()
-    df: pl.DataFrame = extract.process_pdf_files(pytest.landing_directory)
+    df: pl.DataFrame = extract.process_pdf_files(
+        pytest.landing_directory_no_ocr_data)
     connection_raw = duckdb.connect(my_document_model.get_raw_database_dir())
     connection_silver = duckdb.connect(
         my_document_model.get_silver_database_dir())
@@ -72,10 +81,21 @@ class TestPDFExtraction:
         # Given
         extract: ExtractTextFromPDFController = ExtractTextFromPDFController()
         # When
-        df: pl.DataFrame = extract.process_pdf_files(pytest.landing_directory)
+        df: pl.DataFrame = extract.process_pdf_files(
+            pytest.landing_directory_no_ocr_data)
         # Then
         assert df.select(pl.col("text"))[
             0].item() == 'Employee Benefits  2014  '
+
+    def test_extract_text_from_pdf_ocr(self, prepare_document_extract_text):
+        """This method aims to text the pdf extraction"""
+        # Given
+        extract: ExtractTextFromPDFController = ExtractTextFromPDFController()
+        # When
+        df: pl.DataFrame = extract.process_pdf_files_ocr(
+            pytest.landing_directory_ocr_data, pytest.image_conversion)
+        # Then
+        assert len(df) == 2
 
 
 class TestDocumentModel:
@@ -91,7 +111,7 @@ class TestDocumentModel:
         )
         extract: ExtractTextFromPDFController = ExtractTextFromPDFController()
         extracted_documents: pl.DataFrame = extract.process_pdf_files(
-            pytest.landing_directory)
+            pytest.landing_directory_no_ocr_data)
         connection = duckdb.connect(my_document_model.get_raw_database_dir())
         # When
         my_document_model.add_document_page_raw(extracted_documents)
@@ -120,13 +140,14 @@ class TestDocumentModel:
             my_document_model.get_silver_database_dir())
         extract: ExtractTextFromPDFController = ExtractTextFromPDFController()
         extract_documents: pl.DataFrame = extract.process_pdf_files(
-            pytest.landing_directory)
+            pytest.landing_directory_no_ocr_data)
         my_document_model.add_document_page_raw(extract_documents)
         documents_pages: pl.DataFrame = connection_raw.execute("""
                                                   SELECT 
                                                   filename,
                                                   page_number,    
-                                                  text
+                                                  text,
+                                                  is_ocr
                                                   FROM 
                                                   document_pages
                                                   """

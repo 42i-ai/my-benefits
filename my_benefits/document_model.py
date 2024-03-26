@@ -59,7 +59,8 @@ class DocumentsModel:
                                        (
                                         filename TEXT, 
                                         page_number INTEGER, 
-                                        text TEXT
+                                        text TEXT,
+                                        is_ocr BOOLEAN   
                                        )
                                     """)
 
@@ -71,6 +72,7 @@ class DocumentsModel:
                                         filename TEXT, 
                                         page_number INTEGER, 
                                         text TEXT,
+                                        is_ocr BOOLEAN,
                                         tokenized_text TEXT[]
                                        )
                                     """)
