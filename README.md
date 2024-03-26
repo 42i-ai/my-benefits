@@ -44,6 +44,10 @@ To tackle the challenge of data extraction, we will employ four storage layers:
 - _Silver_: Pre-processed data extracted text tokenized and lemmatized.
 - _Gold_: Documents after to extract meaningful information.
 
+> [!CAUTION]
+> If you run the extraction process again you do need to clean files from raw and silver folder.
+
+
 > [!NOTE]
 > To run the code we should put the pdf files on the data folder inside my_benedits app folder.
 > In our case we have the files on a bucket on s3 to got the files.

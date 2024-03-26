@@ -73,6 +73,7 @@ def preprocessing_text() -> pl.DataFrame:
     connection_raw = duckdb.connect(document_model.get_raw_database_dir())
     connection_silver = duckdb.connect(
         document_model.get_silver_database_dir())
+  
     documents_pages: pl.DataFrame = connection_raw.execute("""
                                                   SELECT 
                                                   filename,

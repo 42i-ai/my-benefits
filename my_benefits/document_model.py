@@ -76,19 +76,16 @@ class DocumentsModel:
                                         tokenized_text TEXT[]
                                        )
                                     """)
+        #self.connection_raw.sql("Delete from document_pages")
+        #self.connection_silver.sql("Delete from document_pages")
+        
 
     def add_document_page_raw(self, df: pl.DataFrame):
-        self.logger.debug(
-            f"""Cleannig raw tables""")
-        self.connection_raw.sql("Delete from document_pages")
         self.connection_raw.sql("INSERT INTO document_pages SELECT * FROM df")
         self.logger.debug(f"""Documents wrote on raw database - table document_pages {
             len(df)} documents""")
 
     def add_document_page_silver(self, df: pl.DataFrame):
-        self.logger.debug(
-            f"""Cleannig silver tables""")
-        self.connection_raw.sql("Delete from document_pages")
         self.connection_silver.sql(
             "INSERT INTO document_pages SELECT * FROM df")
         self.logger.debug(f"""Documents wrote on silver database - table document_pages {
