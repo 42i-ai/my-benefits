@@ -5,6 +5,13 @@ This solution aims to solve the problem of data extraction from PDF files. We te
 ```bash
 streamlit run my_benefits/app.py
 ```
+https://learning.oreilly.com/videos/building-recommender-systems/9781789803273/9781789803273-video1_1/
+https://www.youtube.com/watch?v=hQwAL9yneKY
+https://aws.amazon.com/pt/blogs/machine-learning/building-a-customized-recommender-system-in-amazon-sagemaker/
+https://redis.com/blog/real-time-product-recommendation-docarray/
+https://ilnardo92.medium.com/mlops-series-2-deploy-a-recommendation-system-as-hosted-interactive-web-service-on-aws-75a41fc33b9e
+https://www.youtube.com/watch?v=PkKs6oWREr4
+
 
 - [x] Create a dashboard app to preset topic modeling (think of a better way to store data)
 - [x] Extract data from OCR pdf (This task is working. We can solve the dashboard for OCR in the same way as the previous step)
