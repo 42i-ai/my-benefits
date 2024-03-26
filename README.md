@@ -7,7 +7,7 @@ streamlit run my_benefits/app.py
 ```
 
 - [x] Create a dashboard app to preset topic modeling (think of a better way to store data)
-- [ ] Extract data from OCR pdf (This task is working. We can solve the dashboard for OCR in the same way as the previous step)
+- [x] Extract data from OCR pdf (This task is working. We can solve the dashboard for OCR in the same way as the previous step)
 - [x] Add Duckdb to the extraction pipeline
 - [ ] complete the containerizing the application
 - [ ] Draw an architecture for the solution
