@@ -15,13 +15,19 @@ from typing import List, Tuple
 WORDCLOUD_FONT_PATH = "./my_benefits/assets/Inkfree.ttf"
 PDF_NO_OCR_PATH = "./my_benefits/data/pdf-no-ocr-data"
 PDF_OCR_PATH = "./my_benefits/data/pdf-ocr-data"
-
+IMAGE_CONVERSION_PATH = "./my_benefits/data/image-conversion"
 RAW_DIRECTORY = "./my_benefits/raw"
 SILVER_DIRECTORY = "./my_benefits/silver"
 GOLD_DIRECTORY = "./my_benefits/gold"
 MODELS_DIRECTORY = "./my_benefits/models"
 LOGS_DIRECTORY = "./my_benefits/logs"
 
+
+if not os.path.exists(PDF_OCR_PATH):
+    os.makedirs(PDF_OCR_PATH)
+
+if not os.path.exists(IMAGE_CONVERSION_PATH):
+    os.makedirs(IMAGE_CONVERSION_PATH)
 
 if not os.path.exists(PDF_NO_OCR_PATH):
     os.makedirs(PDF_NO_OCR_PATH)
@@ -100,6 +106,9 @@ def extract_information_from_the_pdf_files():
         preprocessed_documents: pl.DataFrame = preprocessing_text()
     with st.spinner('Training model  ...'):
         topic_modeling.train_model(preprocessed_documents)
+    with st.spinner('Extracting text from documents no ocr ...'):
+        documents: pl.DataFrame = extract_data_from_documents.process_pdf_files_ocr(
+            PDF_NO_OCR_PATH, IMAGE_CONVERSION_PATH)
 
 
 def generate_wordcloud(selected_event: str = None, is_ocr: bool = False):
