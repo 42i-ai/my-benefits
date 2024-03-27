@@ -5,12 +5,6 @@ This solution aims to solve the problem of data extraction from PDF files. We te
 ```bash
 streamlit run my_benefits/app.py
 ```
-https://learning.oreilly.com/videos/building-recommender-systems/9781789803273/9781789803273-video1_1/
-https://www.youtube.com/watch?v=hQwAL9yneKY
-https://aws.amazon.com/pt/blogs/machine-learning/building-a-customized-recommender-system-in-amazon-sagemaker/
-https://redis.com/blog/real-time-product-recommendation-docarray/
-https://ilnardo92.medium.com/mlops-series-2-deploy-a-recommendation-system-as-hosted-interactive-web-service-on-aws-75a41fc33b9e
-https://www.youtube.com/watch?v=PkKs6oWREr4
 
 
 - [x] Create a dashboard app to preset topic modeling (think of a better way to store data)
@@ -98,7 +92,16 @@ You can choose your preferred techniques or tools, be aware that sometimes less 
 
 
 
-As a tool for visualization, we will use Streamlit[^17]. Streamlit is a powerful open-source Python library designed to effortlessly transform machine learning and data science projects into interactive web apps, ideal for sharing complex insights with non-technical audiences. Its standout feature is the rapid development cycle, allowing scripts to become fully functional web applications in mere hours, enhancing communication with decision-makers. Streamlit's pure Python approach obviates the need for web development expertise, streamlining the workflow for data scientists. Despite its simplicity, Streamlit efficiently handles user interactions through an immediate mode UI and smart caching, ensuring a smooth and responsive user experience. This blend of ease of use, quick development, and no requirement for additional web technology skills makes Streamlit a highly accessible tool for sharing data-driven insights. To run the Stremlit app from the project folder, exectue the following code:
+As a tool for visualization, we will use Streamlit[^17]. Streamlit is a powerful open-source Python library designed to effortlessly transform machine learning and data science projects into interactive web apps, ideal for sharing complex insights with non-technical audiences. Its standout feature is the rapid development cycle, allowing scripts to become fully functional web applications in mere hours, enhancing communication with decision-makers. Streamlit's pure Python approach obviates the need for web development expertise, streamlining the workflow for data scientists. Despite its simplicity, Streamlit efficiently handles user interactions through an immediate mode UI and smart caching, ensuring a smooth and responsive user experience. This blend of ease of use, quick development, and no requirement for additional web technology skills makes Streamlit a highly accessible tool for sharing data-driven insights. 
+
+### Topic Modeling
+
+We will user Topic Modeling for analyze the text and cluster the documents in topics. Topics Modeling assumes:
+
+- Documents with similar topics use similar groups of words.
+- Latent Topics can then be found by search the groups of words that frequently occurs together in documents across the corpus.
+
+
 
 
 # 3 - Data Extraction OCR
@@ -122,7 +125,9 @@ brew install tesseract
 We will containerizing an application with dependencies like pdf2image, Poppler, and Tesseract-OCR . For to encapsulate the environment, ensuring that all the necessary tools are available on the specific version. This approach facilitates easier deployment across different systems without compatibility issues.
 
 # Architecture
-
+    1 - Data scientist runs and tracks many model experiments based on staging purchase data. Then, they register the Champion model in the models registry.
+    2 - Machine Learning engineer hands over the model and builds the scoring function.
+    3 - Together with the DevOps engineer, they deploy the model as Hosted Interactive Web Service on AWS.
 # Enviroment:
 
 We use Poetry[2] to manage Python dependencies for the environment solution. The solution will be packaged in a docker-compose file, which can be used to deploy it to production and execute tests on the CD/CI process.
@@ -160,4 +165,16 @@ docker run -p 8501:8501 nlp-challenge
 [^20]: [Spacy](https://spacy.io/)
 [^21]: [Poppler](https://poppler.freedesktop.org/)
 [^22]: [Tesseract](https://tesseract-ocr.github.io/)
+[^23]: [Topic Modeling](https://www.udemy.com/course/nlp-natural-language-processing-with-python/learn/lecture/12897838#overview)
 
+
+
+Aditional Features
+
+https://learning.oreilly.com/videos/building-recommender-systems/9781789803273/9781789803273-video1_1/
+https://www.youtube.com/watch?v=hQwAL9yneKY
+https://aws.amazon.com/pt/blogs/machine-learning/building-a-customized-recommender-system-in-amazon-sagemaker/
+https://redis.com/blog/real-time-product-recommendation-docarray/
+https://ilnardo92.medium.com/mlops-series-2-deploy-a-recommendation-system-as-hosted-interactive-web-service-on-aws-75a41fc33b9e
+https://www.youtube.com/watch?v=PkKs6oWREr4
+https://www.pinecone.io/product/
